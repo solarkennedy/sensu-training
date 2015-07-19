@@ -9,6 +9,7 @@ except ImportError:
     # Python 2
     import httplib as http_client
 
+import markdown
 import requests
 
 
@@ -47,7 +48,30 @@ def setup_basics(secrets):
 
     headers = {'referer': basics_endpoint}
     basics['csrfmiddlewaretoken'] = secrets['cookies']['csrfmiddlewaretoken']
+
+    print "Posting basics:"
+    print basics
     r = requests.post(basics_endpoint, data=basics, headers=headers, cookies=secrets['cookies'])
+    print r
+    r.raise_for_status()
+
+
+def setup_details(secrets):
+    """
+    """
+    details = load_yaml('details.yml')
+    details_endpoint = "https://www.udemy.com/course-manage/edit-details/?courseId=%d" % secrets['courseid']
+    headers = {'referer': details_endpoint}
+    description_html = markdown.markdown(details['description'])
+
+    print "Posting Details"
+    description_dict = {
+        'description': str(description_html),
+        'submit': 'Save',
+        'csrfmiddlewaretoken': secrets['cookies']['csrfmiddlewaretoken'],
+    }
+    print description_dict
+    r = requests.post(details_endpoint, data=description_dict, headers=headers, cookies=secrets['cookies'])
     print r
     r.raise_for_status()
 
@@ -59,3 +83,5 @@ if __name__ == '__main__':
     secrets = load_secrets()
     if args.section == 'basics':
         setup_basics(secrets)
+    if args.section == 'details':
+        setup_details(secrets)
