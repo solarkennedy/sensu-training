@@ -98,6 +98,35 @@ def setup_goals(secrets):
     r.raise_for_status()
 
 
+def setup_chapter(title, description, secrets):
+    endpoint = "https://www.udemy.com/api-1.1/chapters/"
+    referer = "https://www.udemy.com/course-manage/edit-curriculum/?courseId=%d" % secrets['courseid']
+    headers = {
+        'referer': referer,
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-Udemy-Bearer-Token': secrets['cookies']['access_token'],
+        'X-Udemy-Client-Id': secrets['cookies']['client_id'],
+        'X-Udemy-Snail-Case': 'true',
+    }
+    output_data = {
+        'csrfmiddlewaretoken': secrets['cookies']['csrfmiddlewaretoken'],
+        'title': title,
+        'description': description,
+        'disableMemcacheGets': 1,
+        'courseId': secrets['courseid'],
+    }
+    r = requests.post(endpoint, data=output_data, headers=headers, cookies=secrets['cookies'])
+    print r
+    r.raise_for_status()
+
+
+def setup_curriculum(secrets):
+    """
+    """
+#    input_data = load_yaml('curriculum.yml')
+    setup_chapter(title="Test chapter title", description="test chapter description", secrets=secrets)
+
+
 if __name__ == '__main__':
     args = parse_args()
     if args.verbose:
@@ -109,3 +138,5 @@ if __name__ == '__main__':
         setup_details(secrets)
     if args.section == 'goals':
         setup_goals(secrets)
+    if args.section == 'curriculum':
+        setup_curriculum(secrets)
