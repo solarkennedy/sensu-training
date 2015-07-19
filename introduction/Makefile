@@ -1,13 +1,13 @@
 ALL: .basics_updated .details_updated .goals_updated
 
 .basics_updated: basics.yml
-	./go.py basics
+	./go.py $(basename $<)
 	touch $@
 
 .details_updated: details.yml
-	./go.py details
+	./go.py $(basename $<)
 	touch $@
 
 .goals_updated: goals.yml
-	./go.py goals
+	./go.py $(basename $<)
 	touch $@
