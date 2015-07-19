@@ -52,7 +52,8 @@ def setup_basics(secrets):
 
     print "Posting basics:"
     print basics
-    r = requests.post(basics_endpoint, data=basics, headers=headers, cookies=secrets['cookies'])
+    r = requests.post(basics_endpoint,
+                      data=basics, headers=headers, cookies=secrets['cookies'])
     print r
     r.raise_for_status()
 
@@ -99,7 +100,26 @@ def setup_goals(secrets):
 
 
 def setup_chapter(title, description, secrets):
-    endpoint = "https://www.udemy.com/api-1.1/chapters/"
+    api_11_request(path="chapters",
+                   data={'title': title, 'description': description},
+                   secrets=secrets)
+
+
+def setup_lecture(title, description, secrets):
+    api_11_request(path="lectures",
+                   data={'title': title},
+                   secrets=secrets)
+    # setup_lecture_description()
+
+
+def setup_lecture_description(lecture_id, description, secrets):
+    api_11_request(path="lectures/%d" % lecture_id,
+                   data={'description': description},
+                   secrets=secrets)
+
+
+def api_11_request(path, data, secrets):
+    endpoint = "https://www.udemy.com/api-1.1/%s" % path
     referer = "https://www.udemy.com/course-manage/edit-curriculum/?courseId=%d" % secrets['courseid']
     headers = {
         'referer': referer,
@@ -110,11 +130,10 @@ def setup_chapter(title, description, secrets):
     }
     output_data = {
         'csrfmiddlewaretoken': secrets['cookies']['csrfmiddlewaretoken'],
-        'title': title,
-        'description': description,
         'disableMemcacheGets': 1,
         'courseId': secrets['courseid'],
     }
+    output_data.update(data)
     r = requests.post(endpoint, data=output_data, headers=headers, cookies=secrets['cookies'])
     print r
     r.raise_for_status()
