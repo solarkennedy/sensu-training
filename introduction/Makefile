@@ -1,4 +1,4 @@
-ALL: .basics_updated .details_updated
+ALL: .basics_updated .details_updated .goals_updated
 
 .basics_updated: basics.yml
 	./go.py basics
@@ -6,4 +6,8 @@ ALL: .basics_updated .details_updated
 
 .details_updated: details.yml
 	./go.py details
+	touch $@
+
+.goals_updated: goals.yml
+	./go.py goals
 	touch $@

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import json
 import logging
 import yaml
 
@@ -76,6 +77,27 @@ def setup_details(secrets):
     r.raise_for_status()
 
 
+def setup_goals(secrets):
+    """
+    """
+    input_data = load_yaml('goals.yml')
+    endpoint = "https://www.udemy.com/course-manage/edit-goals-and-audience/?courseId=%d" % secrets['courseid']
+    headers = {'referer': endpoint}
+    print "Posting Data:"
+    output_data = {
+        'csrfmiddlewaretoken': secrets['cookies']['csrfmiddlewaretoken'],
+        'what_you_will_learn': json.dumps({"items": input_data['what_you_will_learn']}),
+        'who_should_attend': json.dumps({"items": input_data['who_should_attend']}),
+        'requirements': json.dumps({"items": input_data['requirements']}),
+        'instructional_level': input_data['instructional_level'],
+        'submit': 'Save',
+    }
+    print output_data
+    r = requests.post(endpoint, data=output_data, headers=headers, cookies=secrets['cookies'])
+    print r
+    r.raise_for_status()
+
+
 if __name__ == '__main__':
     args = parse_args()
     if args.verbose:
@@ -85,3 +107,5 @@ if __name__ == '__main__':
         setup_basics(secrets)
     if args.section == 'details':
         setup_details(secrets)
+    if args.section == 'goals':
+        setup_goals(secrets)
