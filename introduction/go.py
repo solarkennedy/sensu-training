@@ -118,7 +118,7 @@ def setup_lecture_description(lecture_id, description, secrets):
                    secrets=secrets)
 
 
-def api_11_request(path, data, secrets):
+def api_11_request(path, data, secrets, method='post'):
     endpoint = "https://www.udemy.com/api-1.1/%s" % path
     referer = "https://www.udemy.com/course-manage/edit-curriculum/?courseId=%d" % secrets['courseid']
     headers = {
@@ -128,22 +128,40 @@ def api_11_request(path, data, secrets):
         'X-Udemy-Client-Id': secrets['cookies']['client_id'],
         'X-Udemy-Snail-Case': 'true',
     }
-    output_data = {
-        'csrfmiddlewaretoken': secrets['cookies']['csrfmiddlewaretoken'],
-        'disableMemcacheGets': 1,
-        'courseId': secrets['courseid'],
-    }
-    output_data.update(data)
-    r = requests.post(endpoint, data=output_data, headers=headers, cookies=secrets['cookies'])
+    if method == 'post':
+        output_data = {
+            'csrfmiddlewaretoken': secrets['cookies']['csrfmiddlewaretoken'],
+            'disableMemcacheGets': 1,
+            'courseId': secrets['courseid'],
+        }
+        output_data.update(data)
+        r = requests.post(endpoint, data=output_data, headers=headers, cookies=secrets['cookies'])
+    else:
+        r = requests.get(endpoint, headers=headers, cookies=secrets['cookies'])
     print r
     r.raise_for_status()
+    return r.json()
+
+
+def get_course_data(secrets):
+    return api_11_request(path="courses/%d?disableMemcacheGets=1" % secrets['courseid'],
+                          data={}, method='get',
+                          secrets=secrets)
+
+
+def get_curriculum(secrets):
+    return api_11_request(path="courses/%d/curriculum/extended?disableMemcacheGets=1" % secrets['courseid'],
+                          data={}, method='get',
+                          secrets=secrets)
 
 
 def setup_curriculum(secrets):
     """
     """
 #    input_data = load_yaml('curriculum.yml')
-    setup_chapter(title="Test chapter title", description="test chapter description", secrets=secrets)
+    print get_course_data(secrets)
+    print get_curriculum(secrets)
+#    setup_chapter(title="Test chapter title", description="test chapter description", secrets=secrets)
 
 
 if __name__ == '__main__':
