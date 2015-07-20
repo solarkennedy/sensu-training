@@ -1,3 +1,11 @@
 ---
 description: |
-  markdown test
+  **Sensu** is a powerful Next-Generation monitoring framework.
+
+  This introductory course will teach *you* the basics of Sensu's architecture
+  and how to take advantage of the flexibility it provides to build awesome systems.
+
+  * Go from Nothing to a full monitoring setup, ready for checks!
+  * Leverage your existing Nagios plugins and checks!
+  * Use **Uchiwa**, the awesome open source Dashboard for Sensu
+  * Setup the foundation to build on more intermediate and advanced Sensu topics

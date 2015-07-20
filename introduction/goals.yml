@@ -1,18 +1,19 @@
 ---
 what_you_will_learn:
- - "Install Sensu!"
- - "Setup a Check!"
- - "Setup A Handler!"
- - "Get an email Notification when their check fails!"
+ - "Knowledge of how to Install Sensu!"
+ - "You will setup a Sensu Check!"
+ - "You will Get an email Notification when their check fails!"
+ - "A solid understanding of Sensu's Architecture."
 
 who_should_attend:
- - "Sysadmins who are sick of inflexible monitoring systems!"
- - "Curious Devopsy types who have heard of Sensu and would like to try it for themselves!"
- - "System engineers who want to further their craft by adding a super cool tool to their toolbox!"
+ - "*Sysadmins* who are sick of inflexible monitoring systems!"
+ - "Curious *Devopsy* types who have heard of Sensu and would like to try it for themselves!"
+ - "System *engineers* who want to further their craft by adding a super cool tool to their toolbox!"
 
 requirements:
  - "Standard Linux administration knowledge (installing packages, starting things, looking at logs)."
  - "A VM or Server with a modern OS (Ubuntu is used in this Video) for installing Sensu and testing it out."
  - "The server must have access to the internet to download packages and send email."
+ - "A sense of Curiosity for learning new things!"
 
 instructional_level: 1
