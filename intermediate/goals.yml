@@ -1,0 +1,21 @@
+---
+what_you_will_learn:
+ - "How to deploy Sensu with Configuration Management!"
+ - "How to write your own Sensu Checks and Handlers!"
+ - "Understanding of Senus Pub/Sub model, and how to take advantage of it"
+ - "A solid (reinforced) understanding of Sensu's Architecture."
+
+who_should_attend:
+ - "If you have got your feet wet with the Introduction class and you are ready for more"
+ - "Professionals who want to learn more than just the 'surface' level Sensu concepts"
+ - "*Sysadmins* who are sick of inflexible monitoring systems!"
+ - "Curious *Devopsy* types who have heard of Sensu and would like to try it for themselves!"
+ - "System *engineers* who want to further their craft by adding a super cool tool to their toolbox!"
+
+requirements:
+ - "Standard Linux administration knowledge (installing packages, starting things, looking at logs)."
+ - "A VM or Server with a modern OS (Ubuntu is used in this Video) for configuring Sensu."
+ - "The server must have access to the internet to download packages and send email."
+ - "A sense of Curiosity for learning new things!"
+
+instructional_level: 2

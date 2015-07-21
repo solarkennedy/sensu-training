@@ -1,0 +1,14 @@
+---
+description: |
+  **Sensu** is a powerful Next-Generation monitoring framework.
+
+  More than just a beginner Sensu user? Ready to learn more?
+
+  This **intermediate** course will teach you the things you
+  need to setup Sensu in ***Production***.
+
+  Production to me means that it is:
+
+  * Monitored (Yes, we monitor the monitors)
+  * Sustainably deployed (with configuration management)
+  * Has room to grow (new handlers, new checks, etc)
