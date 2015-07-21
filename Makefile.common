@@ -1,0 +1,13 @@
+ALL: .basics_updated .details_updated .goals_updated
+
+.basics_updated: basics.yml
+	../sync.py $(basename $<)
+	touch $@
+
+.details_updated: details.yml
+	../sync.py $(basename $<)
+	touch $@
+
+.goals_updated: goals.yml
+	../sync.py $(basename $<)
+	touch $@
