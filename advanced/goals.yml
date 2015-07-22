@@ -1,0 +1,19 @@
+---
+what_you_will_learn:
+ - "How to build out all Sensu components in a Highly Available Way"
+ - "Support a multi-team environment"
+ - "Monitor external devices that don't run the Sensu Agent"
+ - "Advanced clustering and scaling strategies"
+
+who_should_attend:
+ - "If took the Intermediate class and you are ready for more!"
+ - "Professionals who want to take their Sensu skills to the Ultimate level"
+ - "Engineers who want to build Awesome monitoring infrastructure, and need tools to do it"
+
+requirements:
+ - "Standard Linux administration knowledge (installing packages, starting things, looking at logs)."
+ - "A VM or Server with a modern OS (Ubuntu is used in this Video) for configuring Sensu."
+ - "The server must have access to the internet to download packages and send email."
+ - "A sense of Curiosity for learning new things!"
+
+instructional_level: 3
