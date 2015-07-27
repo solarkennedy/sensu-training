@@ -2,7 +2,7 @@
 what_you_will_learn:
  - "Knowledge of how to Install Sensu!"
  - "You will setup a Sensu Check!"
- - "You will Get an email Notification when their check fails!"
+ - "How to setup a Sensu Dashboard and how to use it!"
  - "A solid understanding of Sensu's Architecture."
 
 who_should_attend:

@@ -30,7 +30,7 @@ The Sensu Server is the daemon that pulls result data off of the queue and acts 
 
 The Sensu server can *also* ask for checks to be executed on the Sensu clients. These are called subscription-based checks, because the clients have to "subscribe" to a particular tag, like "webserver". The Sensu server puts a request for a particular check, say `check_http` to be executed by all clients that are subscribed to the "webserver" tag. Remember this is contrast to "standalone" checks where the Sensu-client does the scheduling.
 
-The differences between subscription-based checks and standalone checks is also a common source of confusion amongst new Sensu users. We'll talk more about the differences in future lectures.
+The differences between subscription-based checks and standalone checks is also a common source of confusion amongst new Sensu users. I'll cover this in-depth in a different course.
 
 ==== Redis
 
