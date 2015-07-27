@@ -2,6 +2,8 @@
 
 RabbitMQ is the message bus between the Sensu Server and the Sensu Client. We have to get it setup first before we can do much of anything in Sensu. Lets do it.
 
+https://sensuapp.org/docs/0.20/install-rabbitmq
+
 === Setup
 
 I'm mostly going to be following the guildlines of the official Sensu documentation. RabittMQ has it's own docs and everything, but for the most part the only Sensu-specific thing is adding the vhost, user, and permissions.
