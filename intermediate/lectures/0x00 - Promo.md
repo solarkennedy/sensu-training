@@ -20,3 +20,7 @@ If you are going to run Sensu in production, it means you need real actionable a
 
 Having a production Sensu environment implies that it is secure. So I'll cover adding SSL to the transport and point out other places to harden Sensu or other common security gotchas you might encounter building out your Sensu infrastructure.
 
+=== Conclusion
+
+And guess what, learning a system is all about learning from mistakes. In these courses I'm not going to get all my commands right the first time, I'm actually going to purposly make common mistakes, ask some questions to myself about what might possibly be wrong, and do my own troubleshooting right in front of you. That way you will know what it looks like when you've got it right, when you've got it wrong, and hopefully you'll have a few hints on what to do about it. To me that is the real value of this course.
+
