@@ -3,3 +3,4 @@ secrets.yml
 images/
 videos/
 *.ogv
+.vagrant/

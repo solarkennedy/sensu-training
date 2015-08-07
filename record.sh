@@ -1,14 +1,16 @@
 #!/bin/bash
-filename=${1-recording.ogv}
+filename=${1-screencast}
 
 width=1280
 height=720
 y=100
 x=100
 
-(terminator --geometry=${width}x${height}+${x}+${y} --borderless ; killall recordmydesktop )&
-sleep 1
+vagrant up
+
+(terminator --geometry=${width}x${height}+${x}+${y} --borderless -x vagrant ssh; killall recordmydesktop )&
 [[ -e /usr/bin/guake ]] && /usr/bin/guake --hide
+sleep 5
 mplayer /usr/share/sounds/freedesktop/stereo/bell.oga
 recordmydesktop --width=${width} --height=${height} -x ${x} -y ${y} --on-the-fly-encoding -o "$filename"
 
