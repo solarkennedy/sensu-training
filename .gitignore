@@ -2,3 +2,4 @@ secrets.yml
 .*_updated
 images/
 videos/
+*.ogv
