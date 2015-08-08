@@ -1,3 +1,5 @@
+all: record
+
 record:
 	./record.sh
 

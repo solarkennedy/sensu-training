@@ -1,5 +1,6 @@
 == Setup and Configuring RabbitMQ
 
+
 RabbitMQ is the message bus between the Sensu Server and the Sensu Client. We have to get it setup first before we can do much of anything in Sensu. Lets do it.
 
 https://sensuapp.org/docs/0.20/install-rabbitmq
@@ -52,3 +53,10 @@ It is important to know at least a little bit about managing RabbitMQ, you shoul
     tail -f rabbit\@leb1.log
 
 RabbitMQ also has a nice web interface you can use to see how it is doing.
+
+You do have to enable it:
+
+    sudo rabbitmq-plugins enable rabbitmq_management
+    # In other terminal
+    ssh -L 15672:localhost:15672 vagrant@localhost -p 2222 -i ~/.vagrant.d/insecure_private_key
+    xdg-open http://localhost:15672
