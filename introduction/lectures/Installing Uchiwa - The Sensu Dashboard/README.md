@@ -2,13 +2,24 @@
 
 Sensu doesn't come with a dashboard. Surprised? You should not be.
 
-It is refreshing to me that Sensu *doesn't* presume to provide a dashboard and that the API is well-formed enough to provide all the endpoints necissary for an external dashboard or any other external tool to work. In other words: Sensu's de-coupling philosophy means that you can use *any* dashboard, or none, or whatever. If you have some super fancy in-house dashboard that you already have and you want to integrate? Go for it.
+It is refreshing to me that Sensu *doesn't* presume to provide a dashboard and
+that the API is well-formed enough to provide all the endpoints necissary for
+an external dashboard or any other external tool to work.
 
-For most people, the very popular Uchiwa Sensu dashboard will work. Lets install that.
+In other words, Sensu's de-coupling philosophy means that you can use *any*
+dashboard, or none, or whatever. If you have some super fancy in-house
+dashboard that you already have and you want to integrate? Go for it.
+
+For most people, the very popular Uchiwa Sensu dashboard will work just fine.
+Let's install that.
 
 ### Actually Installing It
 
-Uchiwa is available from the same Sensu repositories:
+The official docs references two different dashboards here, "Uchiwa" and the "Sensu Enterprise Dashboard". The Enterprise dashboard is a version of Uchiwa that does fancier authentication and that sort of thing.
+
+For an introductory course, we are going to use the Open Source dashboard, Uchiwa. It works fine for most people. I'll cover the differences between the open source and enterprise versions of everything in a later lecture. But, Uchiwa for now.
+
+Uchiwa is available from the same Sensu repositories that you have enabled from previous steps:
 
     sudo apt-get -y install uchiwa
 
@@ -77,8 +88,3 @@ Invalid charater. Remember when I said that writing json was for computers?
 
     xdg-open http://localhost:3000
 
-
-
-### Tinkering
-
-k
