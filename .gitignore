@@ -4,3 +4,6 @@ images/
 videos/
 *.ogv
 .vagrant/
+*.wav
+*.mp4
+*.MP4
