@@ -7,3 +7,9 @@ videos/
 *.wav
 *.mp4
 *.MP4
+*.mkv
+*.kdenlive
+thumbs/
+proxy/
+.backup/
+thumbnail/
