@@ -1,4 +1,4 @@
-== Why Should I Care About Sensu?
+## Why Should I Care About Sensu?
 
 So you know a bit more about how Sensu works now under the hood.
 
@@ -11,7 +11,7 @@ On the other hand, I think that all engineers should always be on the lookout
 for ways to improve their craft and expanding their toolbox with new and
 better ways to do things, and I think Sensu is a pretty good tool.
 
-=== Traditional monitoring
+### Traditional monitoring
 
 In order to really talk about why Sensu is worth looking at, lets go back to our
 whiteboard and talk a bit about how "normal" monitoring systems work. I'm mostly
@@ -39,7 +39,7 @@ of remote execution checks. Mostly because it is on the server itself were
 you can do the best introspection. And the agents turn into mostly remote
 code execution as a service, that is what they are designed to do after all.
 
-=== A Step Back
+### A Step Back
 
 This may seem perfectly normal for you, but ask yourself, why do we need remote
 code execution in the first place? Well the reason is due to the architecture.
@@ -56,7 +56,7 @@ iterate over the failing things more quickly, what happens to the check latency?
 With Sensu, each client can be made responsible for its own checks. Your checks
 are timely and can scale with your clients, not the server. Thats nice.
 
-=== Client-side Config
+### Client-side Config
 
 Lets looks at this difference in architecture from a different perspective:
 configs. On the traditional monitoring systems the configuration is of course
@@ -79,7 +79,7 @@ and its great. This means you can build systems that require no human
 intervention to keep up to date. There is a lot more room for automation
 with Sensu by design.
 
-=== New Hosts
+### New Hosts
 
 Lets talk about how new hosts get added to monitoring systems. On a traditional
 centralized monitoring system that usually means that it needs to be configured
@@ -93,7 +93,7 @@ lots of room to build much more flexible systems that can grow and shrink,
 something that would be very difficult to design with a traditional monitoring
 system.
 
-=== New Checks
+### New Checks
 
 Likewise, think about the barrier to adding new things to check in traditional
 monitoring systems. It might include a config file or clicking on something on
@@ -118,7 +118,7 @@ that acts as if someone was dynamically adding these checks on your behalf
 into Sensu, and the Sensu server doesn't care, it just acts on the events normally.
 Pretty far out.
 
-== Conclusion
+## Conclusion
 
 Sensu's client-side architecture is just a better design in a world of deployed
 applications, configuration management, and elastic compute. There is just

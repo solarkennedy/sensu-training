@@ -1,6 +1,6 @@
-== Installing Sensu Itself
+## Installing Sensu Itself
 
-=== Repos
+### Repos
 
 Like many projects, Sensu provides packages and repos to make it easy to install.
 
@@ -11,13 +11,13 @@ Here we'll install the Debian package repos per the docs:
     apt-get update
 
 
-=== Actually Installing It
+### Actually Installing It
 
 Now that we have the repo installed and up to date, we can actually install the Sensu package.
 
     apt-get install sensu
 
-=== About the package
+### About the package
 
 As an engineer, you need to know that the Sensu package itself is in "omnibus" form, which means it contains everything it needs to run, including its own ruby interpreter. The same package can function as a Sensu Client, or Server, or API.
 
@@ -37,7 +37,7 @@ You will eventually pick up here that Sensu's configuration is JSON in /etc/sens
 
 True story, Sensu reads in all the json in these directories recursively and then does a big merge. So the filenames are actually irrelevant. The JSON format should be a hint to you that it is designed for a computer program to spit out these files, aka a configuration management tool. While out of the scope of this introductory video, using configuration management is highly recommended, it is pretty easy for us humans to make mistakes writing out json.
 
-=== Configuring Sensu Server
+### Configuring Sensu Server
 
 I'm going to use the same instructions from the official documentation for this introduction, and talk a little bit about what is going on behind the scenes.
 
@@ -48,7 +48,7 @@ Lets download the starter sensu-server config file:
 
 You can see for this example we are running all of these components on localhost on the same server. That is fine for this example. You can see some of Sensu's flexibility here, as you can scale out the components by scaling each in their own way, splitting out things to different hosts, etc. But for most installations, having everything on one host is just fine.
 
-=== Installing the First Check
+### Installing the First Check
 
 We are going to go ahead and follow the official docs and install a memory check:
 
@@ -57,7 +57,7 @@ We are going to go ahead and follow the official docs and install a memory check
 
 As hinted in the early architecture lecture, this is a "subscription" check, as you can tell because there are subscribers in that array, and there is no "standalone" key. (on standalone checks there would be a standalone: true) So this will be a check that will be executed by the client, but requested by the server. It just so happens the client and server on the same machine here.
 
-=== Configuring a handler
+### Configuring a handler
 
 If you remember from the first lecture, Handlers are the things that the sensu Server runs in response to Events. They are just scripts that read event data in json form from stdin and then do *something*. In this example we are just going to install a very trivial handler, "cat":
 
@@ -68,13 +68,13 @@ Can you imagine in your head what this handler will do when it gets event data? 
 
 We'll see it in action in a bit.
 
-=== Big Chown
+### Big Chown
 
     sudo chown -R sensu:sensu /etc/sensu
 
 Just in case we made a mistake as root and sensu can't read any of these files.
 
-=== Start The Server and API
+### Start The Server and API
 
 Lets start up the sensu server and the api component and check it out:
 

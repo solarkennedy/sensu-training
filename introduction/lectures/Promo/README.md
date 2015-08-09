@@ -1,4 +1,4 @@
-== Promo
+## Promo
 
 Hi! My name is Kyle and I would like to be your guide to understanding Sensu.
 
@@ -23,7 +23,7 @@ Sensu works in the first place, and then I talk about what makes Sensu special,
 and how it empowers engineers like you to build and monitor things in ways that really
 wern't possible before.
 
-=== What we'll cover
+### What we'll cover
 
 * We'll setup Sensu *from scratch* so you can see all the pieces and how they
   interact.
@@ -42,7 +42,7 @@ me that is the real value of this course.
 
 Sometimes you can learn more by watching over someones sholder in just a few minutes what would take hours of trying to read docs and understand things that way.
 
-=== Conclusion
+### Conclusion
 
 So if you are looking to step up your monitoring game with Sensu,
 enroll today and learn about together with me :)

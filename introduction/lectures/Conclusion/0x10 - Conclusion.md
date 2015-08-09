@@ -1,4 +1,4 @@
-== Conclusion
+## Conclusion
 
 Sensu is a flexible monitoring framework. It has new concepts to learn, and new pieces to learn to setup and configure.
 

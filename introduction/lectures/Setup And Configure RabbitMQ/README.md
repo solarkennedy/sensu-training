@@ -1,17 +1,17 @@
-== Setup and Configuring RabbitMQ
+## Setup and Configuring RabbitMQ
 
 
 RabbitMQ is the message bus between the Sensu Server and the Sensu Client. We have to get it setup first before we can do much of anything in Sensu. Lets do it.
 
 https://sensuapp.org/docs/0.20/install-rabbitmq
 
-=== Setup
+### Setup
 
 I'm mostly going to be following the guildlines of the official Sensu documentation. RabittMQ has it's own docs and everything, but for the most part the only Sensu-specific thing is adding the vhost, user, and permissions.
 
 For this lecture I'm going to be working on an Ubuntu server, but this would work for any system that you can install RabbitMQ on.
 
-=== Install
+### Install
 
 RabbitMQ is written in Erlang, so per the Sensu-docs recommendation, we are going to install the latest upstream version of Erlang:
 
@@ -30,12 +30,12 @@ Now we'll install RabbitMQ:
 
 You may not technically need the latest version of RabbitMQ, like most software it is a tradeoff between using an older version from your Distro sources versus using the latest version out there on the internet. If you already have a RabbitMQ setup, of course you are free to use it instead!
 
-=== Startup
+### Startup
 
     sudo update-rc.d rabbitmq-server defaults
     sudo /etc/init.d/rabbitmq-server start
 
-=== Configure
+### Configure
 
 Out of the box RabbitMQ is ready to go, but we need a vhost and user for Sensu to use:
 
@@ -45,7 +45,7 @@ Out of the box RabbitMQ is ready to go, but we need a vhost and user for Sensu t
 
 `rabbitmqctl` is the command line tools to administer RabbitMQ, and you can see we have made a Sensu user with the password of "secret", and given it permission on a RabbitMQ vhost. When we configure the Sensu client and server, we'll need these credentials and configure them in the same way.
 
-=== Extra: Logs and web interface
+### Extra: Logs and web interface
 
 It is important to know at least a little bit about managing RabbitMQ, you should at least know where the logs are to troubleshoot:
 

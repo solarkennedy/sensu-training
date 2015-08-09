@@ -1,4 +1,4 @@
-== Installing Uchiwa
+## Installing Uchiwa
 
 Sensu doesn't come with a dashboard. Surprised? You should not be.
 
@@ -6,13 +6,13 @@ It is refreshing to me that Sensu *doesn't* presume to provide a dashboard and t
 
 For most people, the very popular Uchiwa Sensu dashboard will work. Lets install that.
 
-=== Actually Installing It
+### Actually Installing It
 
 Uchiwa is available from the same Sensu repositories:
 
     sudo apt-get -y install uchiwa
 
-=== Configuring Uchiwa
+### Configuring Uchiwa
 
 Lets look at the config file it dropped in for us:
 
@@ -46,14 +46,14 @@ And lets restart uchiwa to pickup those changes:
 
     /etc/init.d/uchiwa restart
 
-=== Looking at the Dashboard
+### Looking at the Dashboard
 
 If we got everything right, then we should be able to load it up.
 
     ssh -L 3000:localhost:3000 root@server
     xdg-open http://localhost:3000
 
-=== Why didn't it work?
+### Why didn't it work?
 
 Well, it didn't work, lets do some basic trouble-shooting.
 
@@ -73,12 +73,12 @@ Invalid charater. Remember when I said that writing json was for computers?
     /etc/init.d/uchiwa start
     ps -ef | grep uchiwa
 
-=== Now load it
+### Now load it
 
     xdg-open http://localhost:3000
 
 
 
-=== Tinkering
+### Tinkering
 
 k

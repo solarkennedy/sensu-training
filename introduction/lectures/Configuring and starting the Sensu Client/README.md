@@ -1,8 +1,8 @@
-== Configuring The Sensu Client
+## Configuring The Sensu Client
 
 Remmeber that for this introduction we are installing the Sensu-Client on the same host as the Sensu-Server.
 
-=== Starting config
+### Starting config
 
 Lets get a starting configuration per the official docs:
 
@@ -15,14 +15,14 @@ Name is the name of the server, usually you might use the fqdn. Address is actua
 
 Remember the client puts things onto rabbitmq. The Sensu server doesn't actually need IP connectivity to the client at all.
 
-=== Check Dependencies
+### Check Dependencies
 
 Remember when we configured the Sensu Server to run that check-mem script in the previous lecture? We didn't even bother to install the actual check script. Why? Remember that checks are always executed by the Sensu-client. This Sensu client we are configuring is going to need this check, so lets get it:
 
     sudo wget -O /etc/sensu/plugins/check-mem.sh http://sensuapp.org/docs/0.20/files/check-mem.sh
     sudo chmod +x /etc/sensu/plugins/check-mem.sh
 
-=== Client startup
+### Client startup
 
 Now lets startup the client:
 
@@ -36,7 +36,7 @@ or if you feel fancy with `jq`:
 
     sudo tail -f /var/log/sensu/sensu-client.log | jq .
 
-=== Note on other config files
+### Note on other config files
 
 Remember that the sensu client talks to RabbitMQ? We are actually taking advantage of the fact that we already have a rabbitmq.json file available for the sensu-client to use.
 

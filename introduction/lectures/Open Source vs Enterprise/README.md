@@ -1,10 +1,10 @@
-== Open Source Versus Enterprise
+## Open Source Versus Enterprise
 
 I am not an employee of Heavy Water.
 
 To be honest I have never used the Enterprise version of Sensu, but for an introductory video I do think that it is worth talking about. Not everyone has a crack team of engineers who are ready to take a framework like Sensu and integrate it with all of your infrastructure.
 
-=== Differences
+### Differences
 
 The number one thing you are getting when you buy something like this instead of using the Open Sourceversion is the Support. If you can't figure out how to get Sensu to work, you can call a real person on the phone and get someone who knows what they are talking about on the other end. This to me is the biggest difference between using the Open Source version of Sensu and using the Enterprise version.
 
