@@ -12,5 +12,5 @@ vagrant up
 [[ -e /usr/bin/guake ]] && /usr/bin/guake --hide
 sleep 5
 mplayer /usr/share/sounds/freedesktop/stereo/bell.oga
-recordmydesktop --width=${width} --height=${height} -x ${x} -y ${y} -o "$filename"
-ffmpeg-static -i "$filename" -c:v huffyuv -c:a pcm_s16le output.mkv
+recordmydesktop --quick-subsampling --on-the-fly-encoding  --full-shots --width=${width} --height=${height} -x ${x} -y ${y} -o "$filename"
+ffmpeg-static -i "$filename".ogv -c:v huffyuv -c:a pcm_s16le output.mkv
