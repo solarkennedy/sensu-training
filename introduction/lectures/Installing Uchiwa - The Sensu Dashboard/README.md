@@ -1,5 +1,7 @@
 ## Installing Uchiwa
 
+Welcome to the lecture on installing a Sensu dashboard.
+
 Sensu doesn't come with a dashboard. Surprised? You should not be.
 
 It is refreshing to me that Sensu *doesn't* presume to provide a dashboard and
@@ -27,7 +29,7 @@ Uchiwa is available from the same Sensu repositories that you have enabled from 
 
 Lets look at the config file it dropped in for us:
 
-    vim /etc/sensu/uchiwa.json
+    sudo vim /etc/sensu/uchiwa.json
 
 Uchiwa is designed to be multi-site aware. This is an advanced topic, but it is good to know that you can use Uchiwa to aggregate multiple sensu endpoints.
 
@@ -37,7 +39,7 @@ For use we only need our local site:
 {
   "sensu": [
     {
-      "name": "Site 1",
+      "name": "localhost",
       "host": "localhost",
       "port": 4567,
       "timeout": 5
@@ -53,9 +55,9 @@ For use we only need our local site:
 
 Caution here: Note that I changed the default away from binding on every ip, and set it to localhost only. Be sure not to accidentally expose an un-authenticated dashboard to the whole world.
 
-And lets restart uchiwa to pickup those changes:
+And lets start Uchiwa:
 
-    /etc/init.d/uchiwa restart
+    /etc/init.d/uchiwa start
 
 ### Looking at the Dashboard
 
@@ -76,15 +78,16 @@ Nope. How about the logs:
 
     cd /var/log/
     tail uchiwa.log
-    tail uchiwa.log | jq .
 
 Invalid charater. Remember when I said that writing json was for computers?
 
+    cd /etc/sensu/
+    jq . uchiwa.json
     vim /etc/sensu/uchiwa.json
+    # Subtle error, but we have a trailing comma
     /etc/init.d/uchiwa start
     ps -ef | grep uchiwa
 
 ### Now load it
 
     xdg-open http://localhost:3000
-
