@@ -4,6 +4,9 @@
 
 If you use Puppet in your environment, or you would like it, I have some good news: Puppet plus Sensu is a pretty good combination.
 
+https://github.com/sensu/sensu-puppet
+https://github.com/Yelp/puppet-uchiwa
+
 === Getting Started
 
 I'm not going to run puppet in full client-server mode for this lesson. There is plenty of other documentation on that, for this lecture I'm just going to focus on Sensu-specific stuff.
