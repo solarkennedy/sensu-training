@@ -1,11 +1,18 @@
 ## Open Source Versus Enterprise
 
-I am not an employee of Heavy Water.
+Lets talk a bit about the Open Source version versus the paid version
+of Sensu.
 
-To be honest I have never used the Enterprise version of Sensu, but for an
+First, full disclosure, I am not an employee of Heavy Water. I am an
+engineer, and I'm responsible for the systems I build. I'm on call
+for them. I have to make design tradeoffs, including
+the "should we pay someone else to help us" decisions.
+
+To be honest I have never used the Enterprise version of Sensu myself, but for an
 introductory video I do think that it is worth talking about. Not everyone has
 a crack team of engineers who are ready to take a framework like Sensu and
-integrate it with all of your infrastructure.
+integrate it with all of your infrastructure, and you play a part in making this
+decsision for your organization, it should be an informed decision.
 
 ### Differences
 
