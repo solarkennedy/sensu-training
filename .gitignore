@@ -12,6 +12,8 @@ videos/
 *.mp4
 *.MP4
 *.mkv
+*.png
+*.pdf
 
 *.kdenlive
 thumbs/
