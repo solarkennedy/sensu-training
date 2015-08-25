@@ -1,11 +1,48 @@
 ---
 description: |
-  **Sensu** is a powerful Next-Generation monitoring framework.
+  **Sensu** is a powerful Next-Generation monitoring framework that is quickly
+  replacing traditional monitoring systems like Zabbix, Icinga, and Nagios.
+
+  But diving into a new monitoring system can be difficult without a guide to
+  show you the way! This course can be your guide to understanding how Sensu
+  works and how to deploy it to your infrastructure.
 
   This introductory course will teach *you* the basics of Sensu's architecture
   and how to take advantage of the flexibility it provides to build awesome systems.
 
-  * Go from Nothing to a full monitoring setup, ready for checks!
-  * Leverage your existing Nagios plugins and checks!
+  **Contents**
+
+  * In-depth architectural overview
+  * Step-by-step howto instructions on getting Sensu up and running
+  * Leverage your existing Nagios plugins written in C, Python, or Bash
+  * Take advantage of the plethora of Open Source Sensu plugins in Ruby!
+  * Learn about RabbitMQ, Redis, Ruby Gems, Sensu's API, and more
   * Use **Uchiwa**, the awesome open source Dashboard for Sensu
   * Setup the foundation to build on more intermediate and advanced Sensu topics
+
+
+  When you are finished with this course you will have setup a **complete**
+  monitoring solution that actually checks things and actually sends email.
+  This is not a theoretical course, it is a practical one that leaves you with
+  skills *and* infrastructure to build upon.
+
+  **Let Me Make The Mistakes For You**
+
+  It's one thing to read docs and get perfect copy-paste command line examples
+  that work. It is another thing to be in real life watching a real engineer
+  fight a live system and try to get it working! I purposely make mistakes
+  just to demonstrate what happens when things go wrong. That gives me an
+  excuse to troubleshoot the problem and then solve it. Then, when you encounter
+  that same mistake in your infrastructure, you will know exactly what to do!
+
+  **For Dev and Ops Alike**
+
+  Sysadmins, Devops Practitioners, Infrastructure engineers, SREs, and simply
+  curious software engineers should take this course to better their craft and
+  learn more about what makes Sensu special. It is **not** your
+  grandfather's monitoring system. It is a modern, scalable, flexible
+  monitoring system with a great API to integrate with your infrastructure.
+
+  Even if you don't end up using Sensu in Production, taking this course will
+  still level-up your monitoring game, by increasing the scope of your DevOps
+  toolbox. So enroll today and check it out!
