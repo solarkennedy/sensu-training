@@ -48,13 +48,18 @@ the latest release of the rabbitmq module from the puppet forge and makes it
 available for use. I don't have to know much about how it works, I just have to
 know how to interface with it in my puppet code.
 
-    vim server.pp
+But we have to start with some puppet code somewhere. I'm going to write it down
+in a file, lets call it `profile_sensu.pp`. I'm a fan of Puppet's role/profile/module
+pattern, which suggest that we make what is called a profile, to tie together
+all the different modules together to make a Sensu server:
+
+    vim profile_sensu.pp
 
 ```puppet
 class { '::rabbitmq': }
  ```
 
-    puppet apply sensu-server.pp
+    puppet apply profile_sensu.pp
 
 Isn't configuration management just great? With one line of puppet code
 we did what took an entire lecture in the introductory course.
@@ -72,14 +77,14 @@ By simply filtering only the "Puppetlabs approved" modules, you can be sure
 that it is decent, has tests, is well maintained, etc.
 
     puppet module install arioch-redis
-    vim sensu-server.pp
+    vim profile_sensu.pp
 
 ```puppet 
 class { '::rabbitmq': }
 class { '::redis': }
 ```
 
-    puppet apply sensu-server.pp
+    puppet apply profile_sensu.pp
     redis-cli ping
 
 So great. Again lots of good defaults here, and room to tweak.
@@ -105,7 +110,7 @@ class { '::redis': }
 class { '::sensu': }
 ```
 
-    puppet apply sensu-server.pp
+    puppet apply profile_sensu.pp
 
 You can see quite a bit of deprecation warnings. At this exact moment in time it looks like the
 puppetlabs apt module is in a flux and the API is changing. Luckily these are just deprecation
@@ -152,7 +157,7 @@ rabbitmq_user_permissions { 'sensu@sensu':
 
 I'm pretty sure this maps with what the official documentation has.
 
-    puppet apply sensu-server.pp
+    puppet apply profile_sensu.pp
 
 Does it work?
 
@@ -303,3 +308,99 @@ restarted the things that need to be restarted, etc. How do the logs look?
     tail -f /var/log/sensu/sensu-client.log
     tail -f /var/log/sensu/sensu-server.log
 
+
+## What Would a Client Look Like?
+
+This may be fine for a server, but what if we were just configuring a client?
+
+    vim profile_sensu_client.pp
+
+We will need the sensu module, for sure:
+
+```puppet
+class { 'sensu':
+}
+```
+
+At the very least we need to give it the same credentials we made early on,
+so that our Sensu clients can connect to RabbitMQ and deposit their check
+results:
+
+    rabbitmq_password => 'correct-horse-battery-staple'
+
+And while the server was just a server, our client will need the RabbitMQ
+hostname too:
+
+    rabbitmq_host => 'localhost',
+
+And if you intend to use Sensu with subscription based checks, remember those
+are checks that are scheduled by the Sensu Server, then we will need to configure
+the Sensu client with which subscriptions it should respond to:
+
+    subscriptions  => ['webserver', 'production'],
+
+Is that it? It is not. The Sensu client is the *only* thing that actually
+executes checks. That means the Sensu client *must* have the Sensu plugins
+available on disk to run. This means that `check-disk` script, or `check_http`,
+or whatever, have to exist on the client.
+
+```puppet
+package { ['sensu-plugins-disk-checks', 'sensu-plugins-http-checks']:
+  ensure   => 'installed',
+  provider => sensu_gem,
+}
+```
+
+Now, if desired you can configure standalone checks on clients as well.
+This makes the most sense to me in a puppet-configured world. Imagine
+you already have a class that defines how you configure a webserver:
+
+```pupppet
+class profile_webserver (
+  $port = 8080,
+){
+
+  class { 'apache':
+    listen_port => $port,
+  }
+
+}
+```
+
+Wouldn't it be great if you could get the monitoring to go right with it?
+
+```puppet
+class { 'apache':
+  listen_port => $port,
+} ->
+sensu::check { 'check_apache':
+  command => "/opt/sensu/embedded/bin/check-http.rb --port ${port} --host localhost",
+}
+```
+
+Now you can apply this apache class to whatever machine you want, and the
+monitoring will go with it. There is really good cohesion between your
+configuration of your software and the monitoring of that software.
+
+Because these are standalone checks, they apply no matter what subscriptions
+the Sensu client is subscribed to. That means if you applied this class
+to your production webserver, or if it was applied to some app server, both
+would get the same monitoring. I think this is just great!
+
+To re-iterate though, I don't think that the monitoring itself belongs
+*in* the apache module. No, the Apache module can just do its thing:
+install apache. It is the "profile" that combines the two together.
+In this particular instance I called it `profile_webserver`, because
+that is the particular function it does.
+
+## Conclusion
+
+Sensu was designed to be used with configuration management, and with
+puppet it really shows. The Sensu puppet module is a *first-class*
+citizen in the puppet world, it can do pretty much anything.
+
+And in the end you *want* it to do everything. More specifically,
+you want to make the most out of this automation so that you
+deploy reproducible infrastructure, that you never have to
+"remember" to add it to Nagios or whatever. With Puppet and Sensu,
+there is a really good bond between the software and the monitoring.
