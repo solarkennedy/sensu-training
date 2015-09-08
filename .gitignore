@@ -1,6 +1,7 @@
 secrets.yml
 .*_updated
 .vagrant/
+*.swp
 
 images/
 videos/
