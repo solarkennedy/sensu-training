@@ -2,16 +2,24 @@
 
 ### Intro
 
-If you use Puppet in your environment, or you would like it, I have some good news: Puppet plus Sensu is a pretty good combination.
+If you use Puppet in your environment, or you would like it, I have some good
+news: Puppet plus Sensu is a pretty good combination.
+
+This lecture is going to focus mostly on these two puppet modules:
 
 https://github.com/sensu/sensu-puppet
 https://github.com/Yelp/puppet-uchiwa
+
+We'll talk about how to put them together to reproduce everything we did in
+the introductory course, that is, a fullly working Sensu setup with checks,
+handlers, and dashboard.
 
 ### Getting Started
 
 I'm not going to run puppet in full client-server mode for this lesson. There
 is plenty of other documentation on that, for this lecture I'm just going to
-focus on Sensu-specific stuff.
+focus on Sensu-specific stuff. To do that, I'm going to write puppet code
+and just use the `puppet apply` command to apply it.
 
 This server that I'm on is freshly imaged, I have not tricks up my sleeve here.
 Everything will be from scratch.
@@ -48,10 +56,11 @@ the latest release of the rabbitmq module from the puppet forge and makes it
 available for use. I don't have to know much about how it works, I just have to
 know how to interface with it in my puppet code.
 
-But we have to start with some puppet code somewhere. I'm going to write it down
-in a file, lets call it `profile_sensu.pp`. I'm a fan of Puppet's role/profile/module
-pattern, which suggest that we make what is called a profile, to tie together
-all the different modules together to make a Sensu server:
+But we have to start with some puppet code somewhere. I'm going to write it
+down in a file, lets call it `profile_sensu.pp`. I'm a fan of Puppet's
+role/profile/module pattern, which suggest that we make what is called a
+profile, to tie together all the different modules together to make a Sensu
+server:
 
     vim profile_sensu.pp
 
@@ -136,14 +145,23 @@ class { '::sensu':
 ```
 
 This module leaves it up to you to configure the rabbitmq part. Simply telling
-Sensu what rabbitmq password to use will not magically make it show up. We
-need more *puppet* magic of course:
+Sensu what rabbitmq password to use will not magically make it show up. We need
+more *puppet* magic of course:
 https://forge.puppetlabs.com/puppetlabs/rabbitmq#native-types
 
 Just like in the official documentation:
 https://sensuapp.org/docs/latest/install-rabbitmq#configure-rabbitmq
 
 We will have to figure out how to do that with puppet.
+
+But before we actually do that, let's apply what we have to see what it looks
+like when it *doesn't* work:
+
+    puppet apply profile_sensu.pp
+    tail -f /var/log/sensu/sensu-server.log
+
+
+Now let's do the other part, and configure rabbitmq for Sensu:
 
 ```puppet
 rabbitmq_user { 'sensu': password => 'correct-horse-battery-staple' }
@@ -183,8 +201,31 @@ package { 'sensu-plugins-mailer':
   provider => sensu_gem,
 }
 ```
+Apply....
 
-Pretty easy. Now how about configuring the handler? There is a puppet type for
+Arg, an error:
+
+```
+Building native extensions.  This could take a while...
+ERROR:  Error installing sensu-plugins-mailer:
+	ERROR: Failed to build gem native extension.
+
+    /opt/sensu/embedded/bin/ruby extconf.rb
+
+Gem files will remain installed in /opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/unf_ext-0.0.7.1 for inspection.
+Results logged to /opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/unf_ext-0.0.7.1/ext/unf_ext/gem_make.out
+```
+This is very common one, you can google for this, but the spoiler alert here
+is that when you install gems you often need a compiler and stuff. On
+ubuntu you can get most of the common packages you need for this with
+the build-essential package. You know, we could install this package manually,
+but how reproducible would that be?
+
+    package { 'build-essential': ensure => installed }
+
+#### Mailer Configuration 
+
+Now how about configuring the handler? There is a puppet type for
 that too:
 https://forge.puppetlabs.com/sensu/sensu#handler-configuration
 
@@ -227,30 +268,7 @@ port it to puppet:
   }
 ```
 
-Apply....
-
-Arg, an error:
-
-```
-Building native extensions.  This could take a while...
-ERROR:  Error installing sensu-plugins-mailer:
-	ERROR: Failed to build gem native extension.
-
-    /opt/sensu/embedded/bin/ruby extconf.rb
-
-Gem files will remain installed in /opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/unf_ext-0.0.7.1 for inspection.
-Results logged to /opt/sensu/embedded/lib/ruby/gems/2.0.0/gems/unf_ext-0.0.7.1/ext/unf_ext/gem_make.out
-```
-This is very common one, you can google for this, but the spoiler alert here
-is that when you install gems you often need a compiler and stuff. On
-ubuntu you can get most of the common packages you need for this with
-the build-essential package. You know, we could install this package manually,
-but how reproducible would that be?
-
-
-    package { 'build-essential': ensure => installed }
-
-Lets take a look at where puppet is putting this stuff:
+ets take a look at where puppet is putting this stuff:
 
     cd /etc/sensu/conf.d/
 
@@ -263,8 +281,10 @@ Everything is nice and tidy. Made by a machine!
 
 ### Installing Checks
 
-In the introductory we had a disk check installed from the Nagios plugins package.
-This time lets try out the equivilant sensu-plugin:
+Sensu doesn't do much unless we install a check for clients to execute.
+
+This time lets try out the same sensu disk check we used from the
+introduction course::
 https://github.com/sensu-plugins/sensu-plugins-disk-checks
 
 Asking puppet to install this is easy with the `sensu_gem` type:
@@ -275,6 +295,14 @@ package { 'sensu-plugins-disk-checks':
   provider => sensu_gem,
 }
 ```
+
+At this point you should be thinking to yourself, wait a minute
+Kyle, I know how Sensu works internally, I watched your introductory
+course and I know that the Sensu Server never executes checks, only
+the clients! You are 100% correct. This code shoud only be installed on
+a client. In this particular case we are running the client and server
+on the same machine. Later I'll split this out and show what a
+client-only puppet class might look like.
 
 That installs the check, but how do we turn it on in Sensu?
 https://forge.puppetlabs.com/sensu/sensu#sensu-client-1
@@ -308,6 +336,59 @@ restarted the things that need to be restarted, etc. How do the logs look?
     tail -f /var/log/sensu/sensu-client.log
     tail -f /var/log/sensu/sensu-server.log
 
+## Installing Uchiwa with Puppet
+
+The official Sensu puppet module links to this puppet module as the recommended
+way of installing and configuring Uchiwa with Puppet.
+
+Lets install this one:
+
+    puppet module install yelp-uchiwa
+
+And now we can include the Uchiwa class with our existing server stuff:
+
+    class { 'uchiwa': }
+
+And now we have another very common error. In puppet, the same resource cannot
+be declared twice. In this case, both Uchiwa and the Sensu puppet module are
+trying to declare the sensu repo.
+
+The solution here is to tell one of them not to manage the repo. In this case
+it is easiest to just tell the `uchiwa` puppet module to not manage the repo:
+
+    class { 'uchiwa':
+      manage_repo => false,
+    }
+
+Apply, and now lets look at it with our browser:
+
+    xdg-open http://localhost:3000
+
+It looks like it isn't working still? Let's look at the logs and see why that
+might be:
+
+    tail /var/log/uchiwa.log
+
+It looks like the configuration file might be missing the `host` setting. Let's
+look at the file
+
+    cat /etc/sensu/uchiwa.json
+
+This is odd, because on github it looks like this bug has been fixed already, but
+on the version of the module that we downloaded from the forge, it isn't.
+
+That is ok, we can manually specify our api endpoints ourselves:
+
+    class { 'uchiwa':
+      manage_repo => false,
+      sensu_api_endpoints => [
+        { 'host' => '127.0.0.1' }
+      ],
+    }
+
+And now it is working. Minus that small bug, you can see how we could potentially
+grow this configuration to include more Sensu endpoints. Possible for showing both
+a production and development environment, or perhaps multiple stage environments.
 
 ## What Would a Client Look Like?
 
