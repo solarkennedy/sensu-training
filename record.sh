@@ -13,4 +13,4 @@ vagrant up
 sleep 5
 mplayer /usr/share/sounds/freedesktop/stereo/bell.oga
 recordmydesktop --no-wm-check --full-shots --width=${width} --height=${height} -x ${x} -y ${y} -o "$filename"
-ffmpeg-static -i "$filename".ogv -c:v huffyuv -c:a pcm_s16le output.avi
+ffmpeg-static -i "$filename".ogv -b60M -threads 8 -vcodec dnxhd -c:a pcm_s16le output.avi

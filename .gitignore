@@ -15,6 +15,7 @@ videos/
 *.mkv
 *.png
 *.pdf
+*.mov
 
 *.kdenlive
 thumbs/
