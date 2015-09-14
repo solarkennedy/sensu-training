@@ -3,11 +3,10 @@
 ## Getting Everything Ready
 
 Welcome to "Using Ansible to Install Sensu". Just like all every configuration
-management lecture, our goal here is to build an example Sensu environment
-in a reproducible way. My specific goal here is to reproduce the exact setup
-we made together in the Introductory course. We'll be installing all the
-server and client components, a dashboard, and example check and email
-handler.
+management lecture, our goal here is to build an example Sensu environment in a
+reproducible way. My specific goal here is to reproduce the exact setup we made
+together in the Introductory course. We'll be installing all the server and
+client components, a dashboard, and example check and email handler.
 
 First I'm going to install Ansible to get going
 
@@ -101,8 +100,8 @@ hash. I'm also going to do the same for `sensu_handlers` for now.
     vim sensu-server-vars.yml
 
     ---
-    sensu_checks: {} 
-    sensu_handlers: {} 
+    sensu_checks: {}
+    sensu_handlers: {}
 
     ansible-playbook site.yml
     tail /var/log/sensu/sensu-server.log
@@ -133,17 +132,13 @@ No red this time, but I'm skeptical that everything worked.
     tail /var/log/sensu/sensu-server.log
 
 You might be able to guess what we are missing, based on what we did
-in the introductory video. The smoking gun is in the RabitMQ logs:
+in the introductory video.
 
-    tail /var/log/rabbitmq/rabbit@vagrant-ubuntu-trusty-64.log
-
-Ah ha, bad credentials. We never setup the credentials in the first place.
 We need to configure Ansible to setup the Sensu RabbitMQ vhost and user.
 
 Let's go back to the list of variables that the Sensu playbook exposes:
 
     https://github.com/Mayeu/ansible-playbook-sensu#role-variables
-
 
 And now lets look at the RabbitMQ playbook and see how we might setup
 RabbitMQ credentials:
@@ -199,6 +194,8 @@ Now we get some red, and it is expected.
 
     tail /var/log/sensu/sensu-server.log
 
+## Installing Redis
+
 Of course, we haven't setup Redis yet. Let's try to find a redis playbook to install
 and use.
 
@@ -221,11 +218,13 @@ for me.
     vim site.yml
     - geerlingguy.redis
 
-    ansible-playbook site.yml 
+    ansible-playbook site.yml
 
 All green, no Red. Is everthing running?
 
     ps -ef
+
+## Everything Running
 
 Great, looks like we've got redis, rabbitmq, the sensu-server, api, and
 Uchiwa. Let's check out uchiwa:
