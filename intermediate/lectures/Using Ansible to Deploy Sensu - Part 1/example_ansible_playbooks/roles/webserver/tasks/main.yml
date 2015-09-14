@@ -1,0 +1,8 @@
+---
+- gem: name=sensu-plugins-http state=present executable=/opt/sensu/embedded/bin/gem user_install=no
+- name: sensu check http
+  copy:
+    content='{{ sensu_check_http | to_nice_json }}'
+    dest=/etc/sensu/conf.d/check_http.json owner=sensu group=sensu mode=0640
+  notify:
+    - restart sensu client

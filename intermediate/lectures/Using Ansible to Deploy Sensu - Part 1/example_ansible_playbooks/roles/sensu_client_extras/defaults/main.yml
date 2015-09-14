@@ -1,0 +1,8 @@
+---
+sensu_disk_check:
+  checks:
+    check_disk:
+      command: /opt/sensu/embedded/bin/check-disk-usage.rb
+      standalone: true
+      interval: 60
+      handlers: ['mailer']

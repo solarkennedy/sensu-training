@@ -1,0 +1,10 @@
+---
+- apt: name=build-essential state=installed
+- gem: name=sensu-plugins-mailer state=present executable=/opt/sensu/embedded/bin/gem user_install=no
+
+- name: sensu mailer config
+  copy:
+    content='{{ sensu_mail_configuration | to_nice_json }}'
+    dest=/etc/sensu/conf.d/mailer.json owner=sensu group=sensu mode=0640
+  notify:
+    - restart sensu server

@@ -1,0 +1,11 @@
+---
+sensu_checks: {}
+sensu_handlers: {}
+
+rabbitmq_vhost_definitions:
+ - name:     "{{ sensu_server_rabbitmq_vhost }}"
+
+rabbitmq_users_definitions:
+  - vhost:    "{{ sensu_server_rabbitmq_vhost }}"
+    user:     "{{ sensu_server_rabbitmq_user }}"
+    password: "{{ sensu_server_rabbitmq_password }}"

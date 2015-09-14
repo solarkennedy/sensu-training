@@ -1,0 +1,21 @@
+---
+# Server Example
+#- hosts: localhost
+#  roles:
+#    - geerlingguy.redis
+#    - Mayeu.RabbitMQ
+#    - Mayeu.sensu
+#    - sensu_server_extras
+#  vars_files:
+#    - sensu-server-vars.yml
+
+# Client Example
+#- hosts: localhost
+#  roles:
+#    - Mayeu.sensu
+#    - sensu_client_extras
+#    - webserver
+#  vars:
+#    - sensu_install_server: no
+#  vars_files:
+#    - sensu-server-vars.yml

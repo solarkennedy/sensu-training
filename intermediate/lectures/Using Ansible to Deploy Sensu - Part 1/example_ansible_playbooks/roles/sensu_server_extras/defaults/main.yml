@@ -1,0 +1,13 @@
+---
+sensu_mail_configuration:
+  handlers:
+    mailer:
+      type: pipe
+      command: /opt/sensu/embedded/bin/handler-mailer.rb
+  mailer:
+    admin_gui: http://admin.example.com:8080/
+    mail_from: sensu@example.com
+    mail_to: monitor@example.com
+    smtp_address: smtp.example.org
+    smtp_port: 25
+    smtp_domain: example.org

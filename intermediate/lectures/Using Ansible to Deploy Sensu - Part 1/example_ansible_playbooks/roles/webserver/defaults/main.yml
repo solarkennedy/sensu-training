@@ -1,0 +1,8 @@
+---
+sensu_check_http:
+  checks:
+    check_http:
+      command: /opt/sensu/embedded/bin/check-http.rb --url 'http://localhost/'
+      standalone: true
+      interval: 60
+      handlers: ['mailer']
