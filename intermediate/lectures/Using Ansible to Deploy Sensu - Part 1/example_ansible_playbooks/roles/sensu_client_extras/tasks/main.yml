@@ -1,5 +1,5 @@
 ---
-- gem: name=sensu-plugins-disk-checks state=present executable=/opt/sensu/embedded/bin/gem user_install=no
+- gem: name=sensu-plugins-disk-checks state=present executable=/opt/sensu/embedded/bin/gem user_install=no state=present
 
 - name: sensu disk check
   copy:

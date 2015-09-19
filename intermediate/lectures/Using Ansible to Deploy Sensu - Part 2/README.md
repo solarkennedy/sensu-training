@@ -36,7 +36,7 @@ And the handlers tasks will take care of installing handlers. Here is
 were we can install that the actual rubygem:
 
     ---
-    - gem: name=sensu-plugins-mailer executable=/opt/sensu/embedded/bin/gem user_install=no
+    - gem: name=sensu-plugins-mailer executable=/opt/sensu/embedded/bin/gem user_install=no state=present
 
 Note the important options here. Obviously we need the name, and we do need to set the path
 to the gem executable. Additionally we need to turn off `user_install`, as that

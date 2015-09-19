@@ -1,6 +1,6 @@
 ---
 - apt: name=build-essential state=installed
-- gem: name=sensu-plugins-mailer state=present executable=/opt/sensu/embedded/bin/gem user_install=no
+- gem: name=sensu-plugins-mailer state=present executable=/opt/sensu/embedded/bin/gem user_install=no state=present
 
 - name: sensu mailer config
   copy:

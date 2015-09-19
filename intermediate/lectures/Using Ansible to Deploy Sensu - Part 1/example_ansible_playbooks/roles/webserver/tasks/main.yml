@@ -1,5 +1,5 @@
 ---
-- gem: name=sensu-plugins-http state=present executable=/opt/sensu/embedded/bin/gem user_install=no
+- gem: name=sensu-plugins-http state=present executable=/opt/sensu/embedded/bin/gem user_install=no state=present
 - name: sensu check http
   copy:
     content='{{ sensu_check_http | to_nice_json }}'
