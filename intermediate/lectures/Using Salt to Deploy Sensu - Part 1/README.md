@@ -1,7 +1,9 @@
+# Using Salt to Deploy Sensu - Part 1
 
-https://github.com/komljen/sensu-salt
+## Getting Started
 
-https://github.com/sensu/sensu-salt 
-
+Welcome to "Using Salt to Deploy Sensu".
 
 https://github.com/saltstack-formulas/sensu-formula
+
+
