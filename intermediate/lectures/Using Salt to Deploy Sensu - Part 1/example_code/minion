@@ -1,0 +1,12 @@
+file_client: local
+file_roots:
+  base:
+    - /srv/salt
+    - /srv/formulas/redis-formula
+    - /srv/formulas/rabbitmq-formula
+    - /srv/formulas/sensu-formula
+    - /srv/formulas/apache-formula
+
+pillar_roots:
+  base:
+    - /srv/pillar
