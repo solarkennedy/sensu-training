@@ -191,7 +191,7 @@ Now let's prune this down to just what we know we need for Sensu and go from the
 ```
 rabbitmq:
   vhost:
-    sensu:
+    '/sensu':
       - owner: sensu
       - conf: .*
       - write: .*
@@ -233,13 +233,16 @@ sensu:
     user: sensu
     password: password
   api:
+    user: admin
     password: password
   ssl:
     enable: False
   uchiwa:
     sites:
-      localhost:
+      site1:
         host: localhost
+        user: admin
+        password: password
 ```
 
 ## Installing Redis
