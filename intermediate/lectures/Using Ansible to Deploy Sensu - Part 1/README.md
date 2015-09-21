@@ -3,10 +3,10 @@
 ## Getting Everything Ready
 
 Welcome to "Using Ansible to Install Sensu". Just like all every configuration
-management lecture, our goal here is to build an example Sensu environment in a
-reproducible way. My specific goal here is to reproduce the exact setup we made
-together in the Introductory course. We'll be installing all the server and
-client components, a dashboard, and example check and email handler.
+management lecture, our goal here is to build an example Sensu environment in
+a reproducible way. My specific goal here is to reproduce the exact setup we
+made together in the Introductory course. We'll be installing all the server
+and client components, a dashboard, and example check and email handler.
 
 First I'm going to install Ansible to get going
 

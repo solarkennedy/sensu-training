@@ -3,10 +3,10 @@
 ## Getting Started
 
 Welcome to "Using Salt to Deploy Sensu". The purpose of this lecture is to
-demonstrate how to use Salt to install and configure Sensu. Specifically
-my goal here is to reproduce the environment we setup in the introductory
-course: where we had a Sensu server, client, api, dashboard, a disk check,
-and a email handler.
+demonstrate how to use Salt to install and configure Sensu. Specifically my
+goal here is to reproduce the environment we setup in the introductory course:
+where we had a Sensu server, client, api, dashboard, a disk check, and a email
+handler.
 
 ### Installing Salt
 
@@ -31,18 +31,23 @@ in "masterless" mode by instructing it to look at just my local files:
 
     mkdir /etc/salt
     vim /etc/salt/minion
-    #
-    file_client: local
-    file_roots:
-      base:
-        - /srv/salt
+
+```
+file_client: local
+file_roots:
+  base:
+    - /srv/salt
+```
+
     mkdir /srv/salt
 
 And now I'll prepare a `top.sls` file, even if there is nothing in it yet:
 
-    base:
-      '*':
-        - TODO
+```
+base:
+  '*':
+    - TODO
+```
 
 ## Installing the Sensu Salt-Formula
 
@@ -52,17 +57,18 @@ On the official Sensu project, there is a tree available:
     https://github.com/sensu/sensu-salt
 
 But it looks a little old with not much activity.
+There is no pillar integration, and it is not very flexible.
 
 However, there *is* an official Salt Formula for Sensu:
 
     https://github.com/saltstack-formulas/sensu-formula
 
-Which does look active, and at the time of this recording, looks like
-the best way to install Sensu using Salt, so that is what I'll use.
+Which does look active, and at the time of this recording, looks like the best
+way to install Sensu using Salt, so that is what I'll use.
 
-To use this Salt Formula, I'm going to store it in the location
-recommended by the docs, which is `/srv/formulas/`. I'm going to
-download this formula manually for now instead of using git:
+To use this Salt Formula, I'm going to store it in the location recommended by
+the docs, which is `/srv/formulas/`. I'm going to download this formula
+manually for now instead of using git:
 
     mkdir -p /srv/formulas
     cd /srv/formulas
@@ -71,9 +77,9 @@ download this formula manually for now instead of using git:
     rm master.tar.gz
     mv sensu-formula-master sensu-formula
 
-It is kind nice to have third party formulas installed like this for use.
-Now I'm going to add this path to my `file_roots` parameter, so that Salt
-knows where to find them
+It is kind nice to have third party formulas installed like this for use.  Now
+I'm going to add this path to my `file_roots` parameter, so that Salt knows
+where to find them
 
     vim /etc/salt/minion
 
@@ -101,8 +107,8 @@ base:
     - sensu.uchiwa
 ```
 
-Now, the docs do say that it is our responsibility to install RabbitMQ and Redis.
-I actually like that this formula doesn't install those for us.
+Now, the docs do say that it is our responsibility to install RabbitMQ and
+Redis.  I actually like that this formula doesn't install those for us.
 
 But for now, let's see what happens when we try to apply these states:
 
@@ -206,15 +212,8 @@ rabbitmq:
           - '.*'
 ``` 
 
-    salt-call  --local state.highstate
-
-Now with that in place, let's see what the logs say now:
-
-    tail /var/log/sensu/sensu-server.log
-
-Still invalid credentials. Sure we setup rabbitmq, but we haven't
-setup Pillar for Sensu for course! Let's setup Pillar for Sensu and fill in
-the configuration blanks
+Sure we setup rabbitmq, but we haven't setup Pillar for Sensu for course!
+Let's setup Pillar for Sensu and fill in the configuration blanks:
 
     cd /srv/pillar
     cp /srv/formulas/sensu-formula/pillar.example /srv/pillar/sensu.sls
@@ -245,6 +244,10 @@ sensu:
         password: password
 ```
 
+Note that I've matched up the credentials we setup in the RabbitMQ pillar
+file. Also note that I've setup a username and password on the api, and
+made those match up with the Uchiwa configuration.
+
 ## Installing Redis
 
 Next we need redis installed. I'm going to use the official redis-formula
@@ -266,7 +269,32 @@ And now we will add the redis state to be top file:
 
     vim /srv/salt/top.sls
 
-I think redis is simple enough that we won't need any extra pillar config.
+    salt-call  --local state.highstate
+
+It says it started it, but it doesn't appear to be running:
+
+    ps -ef | grep redis
+    /etc/init.d/redis-server start
+
+At the time of this recording, it appears that this formula tries to apply
+configuration that doesn't work for this version of redis:
+
+    https://github.com/saltstack-formulas/redis-formula/issues/23
+
+The work around in this case is to setup some pillar data, just to disable
+this configuration option:
+
+    cd /srv/pillar
+    vim top.sls
+    - redis
+    vim redis.sls
+
+```
+redis:
+  tcp_backlog: 0
+```
+
+Now with that in place, let's see if that is enough to get Redis going...
 
     salt-call  --local state.highstate
 
@@ -276,4 +304,5 @@ And it looks like everything is working!
 
 And is Uchiwa up?
 
-Next we'll add all the extra stuff like checks and handlers.
+Looks like Uchiwa has everything connected, but it does look like we have
+a failing cron check, we'll address that next.
