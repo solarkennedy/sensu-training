@@ -183,7 +183,7 @@ to add the gem to this global list.
 Well, Salt doesn't really have a way to install Sensu gems, but it does have a method
 to install gems in general:
 
-    https://docs.saltstack.com/en/develop/ref/states/all/salt.states.gem.html
+    https://docs.saltstack.com/en/latest/ref/states/all/salt.states.gem.html
 
 But the Sensu Formula re-invents this wheel, twice even, once for the server
 and once for the client:
@@ -247,12 +247,15 @@ Ok, let's verify the check script exists
 
 Ok that is there, how about the config file for sensu to check the disk?
 
-    ls -l ls /etc/sensu/conf.d/check_disk.json
+    ls -l /etc/sensu/conf.d/check_disk.json
     jq . /etc/sensu/conf.d/check_disk.json
 
 Looks ok. Is Sensu reading that and acting on it?
 
     tail -f /var/log/sensu/sensu-client.log
+
+It does look like the sensu client has picked up our config file and
+has started to check the disk!
 
 ## Combining Sensu with an Apache Formula
 
@@ -287,7 +290,7 @@ state.
     - webserver
 
     cd /srv/salt 
-    mkdir webserver
+    
     vim webserver/init.sls
 
 To start, I'm just going to include the apache formula:
@@ -368,19 +371,22 @@ And now we get a connection refused. Great!
 ## Conclusion
 
 There are many ways to organize Salt code. I really like the ability to re-use
-existing formulas like RabbitMQ, Apache, Redis, and Sensu. I like the idea that
-we can build a state tree that contains deploys a piece of software and sets
-up the monitoring for it too, like this webserver state tree. I *don't* like
-the idea of a single variable declaring all of the sensu checks for a server.
+existing formulas like RabbitMQ, Apache, Redis, and Sensu. I like the idea
+that we can build a state tree that contains deploys a piece of software and
+sets up the monitoring for it too, like this webserver state tree. I *don't*
+like the idea of a single variable declaring all of the sensu checks for a
+server.
 
 Sensu tolerates having multiple config files that declare individual checks
-very well, so having a state tree deploy it's own config file along side
-the software works just fine.
+very well, so having a state tree deploy it's own config file along side the
+software works just fine.
 
 The purpose of this lecture isn't to prescribe a particular way of organized
 Salt code, as much as it is to inspire you to dream up your own ways of
 integrating Sensu checks with Salt, with your existing states.
 
 If you are curious about the example code I've used here, or need links to the
-exact formulas I used in this lecture, check out the "external resource" section
-for all those things.
+exact formulas I used in this lecture, check out the "external resource"
+section for all those things.
+
+And good luck, installing Sensu checks with Salt!
