@@ -6,7 +6,7 @@ or Salt, they are all tools for reproducing infrastructure
 reliably, and they can all install Sensu stuff.
 
 In each of those configuration management lectures I showed how to
-install checks and handlers using the Sensu omnibus. Let's talk
+install checks and handlers using the Sensu omnibus embedded ruby. Let's talk
 about this in more depth.
 
 ## Installing the mail-handler by hand
@@ -23,13 +23,13 @@ Yes it is on github, it is also a *realy* ruby gem:
     https://rubygems.org/gems/sensu-plugins-mailer
 
 That means you can `gem install` it. If you have never used rubygems
-before, gems are just the ruby-specific package manager for handling
-ruby package installation and dependencies.
+before, gems are just the ruby-specific package manager for handling ruby
+package installation and dependencies.
 
 Being a *real* gem comes with some benefits. It means they have version
 numbers you can pin, you can install them with a single command, you can
-stick them in a Gemfile and lock your dependencies. It is certainly a
-step up compared to fetching something off of github: it is a real package.
+stick them in a Gemfile and lock your dependencies. It is certainly a step
+up compared to fetching something off of github: it is a real package.
 
 ## Installing the Gem
 
