@@ -71,22 +71,25 @@ The default refresh is 1800 seconds, which is 30 minutes. This means that you sh
 get 30 minutes between when the mailer handler will send you emails.
 
 Keep in mind that this setting is independent of the `occurrences` setting. In
-other words, if you have a check that runs once a minute, and an `occurrences` setting of
-`15`, that means you will get an email alert 15 minutes after the check started failing.
-You will then get another email on minute 30, because that is what `refresh` defaults to.
-You won't get another email till minute 60.
+other words, if you have a check that runs once a minute, and an `occurrences`
+setting of `15`, that means you will get an email alert 15 minutes after the
+check started failing.  You will then get another email on minute 30, because
+that is what `refresh` defaults to.  You won't get another email till minute
+60.
 
-This is probably fine, but you should just be aware of how these parameters interact.
+This is probably fine, but you should just be aware of how these parameters
+interact.
 
 If you don't believe me or you would like to see for yourself, you can always
-look at the [sourcecode](https://github.com/sensu-plugins/sensu-plugin/blob/aa59019a584eae88f3e784d7079f59a762879418/lib/sensu-handler.rb#L108-L119)
+look at the
+[sourcecode](https://github.com/sensu-plugins/sensu-plugin/blob/aa59019a584eae88f3e784d7079f59a762879418/lib/sensu-handler.rb#L108-L119)
 that controls this filtering behavior.
 
 #### Dependencies
 
-Dependencies is a totally underutilized parameter. With dependencies you can automatically
-*not* fire an email if a different check is already failing. You can even reference other
-hosts with this '/' notation.
+Dependencies is a totally underutilized parameter. With dependencies you can
+automatically *not* fire an email if a different check is already failing. You
+can even reference other hosts with this '/' notation.
 
 A real world example of this might be something that operates via cron, and you
 know that if cron isn't running, then you don't need an alert on this thing
@@ -105,7 +108,7 @@ won't catch your typo.
 
 We've covered a few check tunables that you can use out of the box to help
 customize your alerting experience for you and your teams. Let's take moment
-to talk about taking this to a really interesting leve: custom check attributes.
+to talk about taking this to a really interesting level: custom check attributes.
 
 Say we have a check definition on disk already:
 
