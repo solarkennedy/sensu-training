@@ -314,3 +314,7 @@ tools that are also compatible, thanks to the Nagios-compliant
 return-code api.
 
 So go forth and write Sensu checks like a pro!
+
+### Further Reading:
+
+* [Sensu-plugin documentation](https://github.com/sensu-plugins/sensu-plugin)

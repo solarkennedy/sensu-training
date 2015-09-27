@@ -207,4 +207,10 @@ I am by no means a "Ruby guy", but I can handle this.
 
 So go forth and do not be afraid to build custom integrations with Sensu,
 as you can see you can get very far with a very minimal product. With a
+
+### Further Reading
+
+* [Official Documentation](https://github.com/sensu-plugins/sensu-plugin#handlers)
+* [Notify My Android Rubygem](https://github.com/slashk/ruby-notify-my-android)
+* [Sensu Show Handler](https://github.com/sensu/sensu-community-plugins/blob/master/handlers/debug/show.rb)
 little glue, Sensu can integrate with just about anything!
