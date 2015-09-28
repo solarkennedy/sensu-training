@@ -1,7 +1,8 @@
 #!/opt/sensu/embedded/bin/ruby
 require 'sensu-handler'
+require 'ruby-notify-my-android'
 
-class Show < Sensu::Handler
+class NofityMyAndroid < Sensu::Handler
 
   def handle
     response = NMA.notify do |n|
