@@ -1,0 +1,28 @@
+#!/opt/sensu/embedded/bin/ruby
+require 'sensu-plugin/check/cli'
+
+class CheckFileExists < Sensu::Plugin::Check::CLI
+
+  option :inverse,
+    :long => "--inverse",
+    :description => "Return OK if the file doesn't exist, Critical if it exists",
+    :boolean => true
+
+  def run
+    filename = argv[0]
+    if File.exists?(filename)
+      if not config[:inverse]
+        ok "File '#{filename}' exists!"
+      else
+        critical "File '#{filename}'exists!"
+      end
+    else
+      if not config[:inverse]
+        critical "File '#{filename}' doesn't exist!"
+      else
+        ok "File '#{filename}' doesn't exist!"
+      end
+    end
+  end
+
+end
