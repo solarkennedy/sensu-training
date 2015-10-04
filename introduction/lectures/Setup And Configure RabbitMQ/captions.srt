@@ -1,0 +1,295 @@
+1
+00:00:00,000 --> 00:00:04,000
+Hi and welcome to the screencast on installing and configuring RabbitMQ.
+
+2
+00:00:05,100 --> 00:00:09,280
+If you remember from our architecture diagram RabbitMQ is the central message bus
+
+3
+00:00:09,280 --> 00:00:11,380
+between the Sensu server and the Sensu Client.
+
+4
+00:00:11,800 --> 00:00:14,880
+So we have to get it setup first before we can really do much of anything in Sensu.
+
+5
+00:00:15,540 --> 00:00:16,480
+So that's what we'll do.
+
+6
+00:00:17,560 --> 00:00:21,020
+I'm mostly going to be following the guidelines of the official Sensu documentation.
+
+7
+00:00:21,900 --> 00:00:27,180
+I'm doing this because this is an introductory course, so it's likely you'll have kind of a stock setup
+
+8
+00:00:27,480 --> 00:00:29,880
+with no previous installation.
+
+9
+00:00:30,980 --> 00:00:35,200
+I'm going to be following the guidelines kind of verbatim,
+
+10
+00:00:36,540 --> 00:00:37,200
+so let's do it.
+
+11
+00:00:38,260 --> 00:00:40,520
+First we'll start by installing Erlang.
+
+12
+00:00:41,720 --> 00:00:47,580
+if you didn't know RabbitMQ is written in Erlang so it requires the Erlang virtual machine.
+
+13
+00:00:48,980 --> 00:00:50,840
+We're going to be installing from the official sources.
+
+14
+00:00:56,720 --> 00:00:59,140
+We'll speed pass the installation here
+
+15
+00:01:03,100 --> 00:01:07,460
+You may not technically need the most latest and greatest version of Erlang and RabbitMQ
+
+16
+00:01:08,160 --> 00:01:09,160
+but it's recommended.
+
+17
+00:01:10,040 --> 00:01:14,880
+There's always the trade-off of course between using the latest versions from
+
+18
+00:01:15,100 --> 00:01:18,060
+external sources versus the stable
+versions from the distro but
+
+19
+00:01:18,720 --> 00:01:19,920
+they may be outdated.
+
+20
+00:01:21,920 --> 00:01:25,460
+The official docs do recommend using the latest versions so that's what we do here in this video.
+
+21
+00:01:29,340 --> 00:01:32,080
+And now that we have Erlang installed, we'll install RabbitMQ.
+
+22
+00:01:35,620 --> 00:01:38,040
+Again we're using the official upstream repositories.
+
+23
+00:01:40,900 --> 00:01:41,960
+To get the latest version.
+
+24
+00:01:46,240 --> 00:01:49,780
+Of course if you already have a RabbitMQ installation
+
+25
+00:01:50,260 --> 00:01:51,660
+you're absolutely free to use it.
+
+26
+00:01:52,530 --> 00:01:56,210
+Sensu doesn't really mind where it gets
+RabbitMQ as long as it's available.
+
+27
+00:01:56,880 --> 00:02:01,180
+Of course for this introduction video we're going to be just using our local server to host RabbitMQ,
+
+28
+00:02:01,180 --> 00:02:07,860
+but it could very easily be a remote
+installation or an existing RabbitMQ cluster.
+
+29
+00:02:08,240 --> 00:02:11,220
+Again this is one of the nice things
+about Sensu is because it's modular
+
+30
+00:02:11,820 --> 00:02:16,600
+if you need to scale out your RabbitMQ separately from your Sensu cluster you can.
+
+31
+00:02:17,620 --> 00:02:21,060
+And of course you can reuse RabbitMQ
+for your own purposes as well.
+
+32
+00:02:27,080 --> 00:02:31,500
+Per the docs, we'll make it start on default and we'll start it up.
+
+33
+00:02:35,940 --> 00:02:39,120
+RabbitMQ is kind of like Apache in the sense that is has vhosts
+
+34
+00:02:39,220 --> 00:02:41,840
+that allow you to segregate different queues and different
+
+35
+00:02:42,440 --> 00:02:44,860
+exchanges to different users.
+
+36
+00:02:46,240 --> 00:02:50,000
+So per the official documentation we are going to make a Sensu RabbitMQ vhost.
+
+37
+00:02:50,960 --> 00:02:53,000
+And we'll give that Sensu user permissions
+
+38
+00:02:54,620 --> 00:02:57,500
+We'll make it a Sensu user and give it permissions user and get permissions to that vhost.
+
+39
+00:02:59,600 --> 00:03:02,380
+That's all there is for the official documentation on RabbitMQ.
+
+40
+00:03:02,620 --> 00:03:05,240
+I'd like to give you a little bit more information about
+
+41
+00:03:05,460 --> 00:03:07,760
+RabbitMQ in case you've never run it before.
+
+42
+00:03:08,520 --> 00:03:12,020
+RabbitMQ is it's own things own thing, it's got it's own docs, it's own
+
+43
+00:03:12,600 --> 00:03:15,040
+scaling properties, it's own failure modes,
+
+44
+00:03:15,500 --> 00:03:18,060
+but you should at least be aware of where the logs are.
+
+45
+00:03:18,220 --> 00:03:21,720
+The logs are in the place you'd expect them to be:
+
+46
+00:03:23,700 --> 00:03:24,760
+/var/log/rabbitmq/
+
+47
+00:03:26,320 --> 00:03:31,020
+It's got a couple different logs for different of things but the main log is going to be this one here.
+
+48
+00:03:36,480 --> 00:03:41,880
+Not much to report yet, but you'll see more when we start up Sensu and it starts communicating.
+
+49
+00:03:42,700 --> 00:03:47,120
+Very common errors occur when there's a
+mismatch between the Sensu configuration
+
+50
+00:03:47,120 --> 00:03:49,720
+for RabbitMQ and RabbitMQ's
+configuration.
+
+51
+00:03:49,720 --> 00:03:53,100
+For example: usernames and password and vhosts and that kind of thing.
+
+52
+00:03:54,740 --> 00:03:59,100
+RabbitMQ also has a web interface
+which is nice to have in some situations.
+
+53
+00:03:59,159 --> 00:04:02,120
+It's good to have some visualization
+into what's going on behind the scenes
+
+54
+00:04:03,260 --> 00:04:05,040
+there's a little more work to enable it,
+
+55
+00:04:06,640 --> 00:04:09,260
+but you can enable the RabbitMQ management plugin.
+
+56
+00:04:10,340 --> 00:04:12,380
+Now because I'm using your Vagrant I have to make
+
+57
+00:04:12,380 --> 00:04:16,500
+a separate SSH tunnel to get localhost access because
+
+58
+00:04:17,100 --> 00:04:21,040
+by default it's only available using the guest user with localhost
+
+59
+00:04:25,680 --> 00:04:30,540
+and then you can just open up localhost:15672
+
+60
+00:04:30,540 --> 00:04:35,040
+the management port in your web broser and then you can use the guest account.
+
+61
+00:04:35,640 --> 00:04:36,360
+username is guest
+
+62
+00:04:36,360 --> 00:04:37,220
+password is guest
+
+63
+00:04:39,060 --> 00:04:41,560
+And you can see that there's not much going on again, there's
+
+64
+00:04:41,920 --> 00:04:44,900
+just installed, so nothings actually happen here
+
+65
+00:04:44,900 --> 00:04:49,080
+but it's good to know that this exists so you can see what's going on
+
+66
+00:04:49,880 --> 00:04:53,800
+That's about it for RabbitMQ. Again
+there's not much going on more not so it's not much to see
+
+67
+00:04:54,160 --> 00:04:56,640
+but once we install Sensu you'll see messages flowing in here.
+
+68
+00:04:57,200 --> 00:05:02,260
+I have additional information on the lecture
+notes regarding the official
+
+69
+00:05:02,270 --> 00:05:05,110
+documentation and the steps and commands I ran in this.
+
+70
+00:05:05,110 --> 00:05:09,530
+Again they mostly mirror from what the official Sensu documentation has
+
+71
+00:05:09,940 --> 00:09:26,020
+but that's about it for RabbitMQ.
+

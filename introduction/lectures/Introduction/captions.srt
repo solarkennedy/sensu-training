@@ -1,0 +1,79 @@
+1
+00:00:00,000 --> 00:00:06,879
+Hi.  Welcome to Sensu: An introduction.
+My name is Kyle.  I'm an engineer.
+
+2
+00:00:06,879 --> 00:00:13,030
+I build systems for a living.  I run Sensu in production.  I get paged for it; I get paged for
+
+3
+00:00:13,030 --> 00:00:19,480
+all the systems I build.  I care about them
+and I want to build systems that I can
+
+4
+00:00:19,480 --> 00:00:20,300
+be proud of.
+
+5
+00:00:20,300 --> 00:00:27,279
+I'm proud of the Sensu infrastructure I've built. I'd like to share that with you.  Throughout
+
+6
+00:00:27,279 --> 00:00:31,580
+this course I'll be teaching mostly the
+open source version of Sensu,
+
+7
+00:00:31,580 --> 00:00:34,960
+although I will cover the differences
+between the open source enterprise
+
+8
+00:00:34,960 --> 00:00:41,950
+version, if you're interested in that.  I hope
+that you are also an engineer who wants
+
+9
+00:00:41,950 --> 00:00:45,829
+to build good systems and whether you're
+installing a monitoring system from scratch
+
+10
+00:00:45,829 --> 00:00:51,800
+where you currently don't have a monitoring system or if you're replacing an
+
+11
+00:00:51,800 --> 00:00:56,860
+existing centralized monitoring with a modern one like
+Sensu, both of these use cases are
+
+12
+00:00:56,860 --> 00:01:04,650
+covered in this introductory course.  I also hope
+that you'll share my enthusiasm
+
+13
+00:01:04,650 --> 00:01:07,950
+about Sensu's architecture and
+flexibility.
+
+14
+00:01:07,950 --> 00:01:13,260
+These to me are the two key points that make
+Sensu different compared to all the
+
+15
+00:01:13,260 --> 00:01:19,210
+other monitoring systems out there.  So sit
+back, take some notes, get a server
+
+16
+00:01:19,210 --> 00:01:23,470
+running and walk with me through
+installing and configuring Sensu for
+
+17
+00:01:23,470 --> 00:01:25,220
+the first time.  I hope you enjoy it!

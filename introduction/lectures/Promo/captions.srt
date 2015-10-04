@@ -1,0 +1,68 @@
+0
+00:00:00,000 --> 00:00:05,660
+Hi.  My name is Kyle and I'm a systems
+engineer and I run Sensu in production at
+
+1
+00:00:05,660 --> 00:00:10,639
+scale.  At the end of course you'll have a
+fully working Sensu setup.  It'll be
+
+2
+00:00:10,639 --> 00:00:14,120
+actually checking things and actually
+sending you emails when things are broken.
+
+3
+00:00:14,120 --> 00:00:19,230
+We'll also cover how to use the dashboard
+and how to take advantage of the Sensu
+
+4
+00:00:19,230 --> 00:00:23,980
+community plug-ins; a huge repo of open
+source plugins that's ready to be
+
+5
+00:00:23,980 --> 00:00:27,380
+integrated with Sensu with a single
+command.  And guess what?
+
+6
+00:00:27,380 --> 00:00:32,369
+Learning a new system is all about
+making mistakes.  In this course I'm
+
+7
+00:00:32,369 --> 00:00:35,120
+actually gonna purposely make mistakes,
+
+8
+00:00:35,120 --> 00:00:38,320
+go through the act of actually
+troubleshooting them and then fix them right
+
+9
+00:00:38,320 --> 00:00:42,410
+in front of you.  That way you know what
+it looks like when things are broken and
+
+10
+00:00:42,410 --> 00:00:45,550
+what it looks like when they're
+fixed.  This course is specifically
+
+11
+00:00:45,550 --> 00:00:50,879
+designed for curious DevOps-y style
+engineers who are looking to better
+
+12
+00:00:50,879 --> 00:00:55,850
+their craft.  So enroll today and learn
+about what makes Sensu special with
+
+13
+00:00:55,850 --> 00:00:56,010
+me.
+

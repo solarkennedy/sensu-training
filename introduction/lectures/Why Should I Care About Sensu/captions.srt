@@ -1,0 +1,646 @@
+1
+00:00:01,600 --> 00:00:05,009
+In order to really look at why Sensu is worth looking at
+
+2
+00:00:05,500 --> 00:00:09,700
+let's look at the whiteboard and begin
+to talk about how a normal monitoring system;
+
+3
+00:00:09,700 --> 00:00:14,500
+something more traditional might work.
+I'm mostly going to be thinking about Nagios
+
+4
+00:00:14,500 --> 00:00:17,200
+in my head because that's
+what I have a lot of experience with
+
+5
+00:00:17,700 --> 00:00:21,000
+but most centralized, traditional monitoring system work in the same way.
+
+6
+00:00:22,500 --> 00:00:30,000
+A more traditional monitoring system looks like this and then the centralized component packs all of this
+
+7
+00:00:31,500 --> 00:00:40,500
+into the server part, where the server is
+responsible for: a dashboard, state, queue,
+
+8
+00:00:41,000 --> 00:00:53,000
+check execution and the server sends checks to host.  This is pretty normal
+
+9
+00:00:53,000 --> 00:00:58,500
+and what you might design if you were just building a monitoring system just from scratch.
+
+10
+00:00:58,500 --> 00:01:01,600
+But you'll quickly find that the architecture is limiting
+
+11
+00:01:02,000 --> 00:01:06,500
+because you can only check things that are externally accessible on this host
+
+12
+00:01:07,000 --> 00:01:12,300
+In order to get the inside scoop on what the host is doing internally
+
+13
+00:01:12,300 --> 00:01:18,000
+you have to run an agent and that
+agent will do things in proxy for the server;
+
+14
+00:01:18,000 --> 00:01:22,700
+Things like: checking the RAID card
+or seeing how much memory is on the host .
+
+15
+00:01:22,700 --> 00:01:27,000
+Things that are difficult to expose or things that you don't want to expose externally.
+
+16
+00:01:28,300 --> 00:01:32,640
+This is fine but why do we have to do this in the first place?
+
+17
+00:01:32,640 --> 00:01:37,500
+Well, that's because in traditional monitoring systems the server
+
+18
+00:01:37,500 --> 00:01:43,500
+schedules and executes the checks and the host doesn't really do anything, it just responds.
+
+19
+00:01:44,500 --> 00:01:49,000
+Whereas with Sensu the agent is the thing I execute the checks,
+
+20
+00:01:49,800 --> 00:01:53,030
+the server just responds to the results.
+
+21
+00:01:53,200 --> 00:01:56,800
+This is a big shift and a point that I
+want to get across
+
+22
+00:01:56,800 --> 00:02:01,000
+as a key between Sensu and more traditional monitoring systems.
+
+23
+00:02:01,300 --> 00:02:06,500
+Again, in traditional monitoring systems the server executes the checks,
+
+24
+00:02:07,000 --> 00:02:15,700
+maybe via an agent but in Sensu, the Sensu client or agent executes all the checks,
+
+25
+00:02:15,700 --> 00:02:20,500
+Sensu server doesn't execute
+anything. this allows things to scale.
+
+26
+00:02:20,600 --> 00:02:26,500
+A centralized monitoring system has to schedule and execute all the checks across all your systems.
+
+27
+00:02:26,800 --> 00:02:31,000
+If you have a hundred hosts and
+hundred checks on each host
+
+28
+00:02:31,000 --> 00:02:36,500
+that means the server needs to execute
+10,000 checks.
+
+29
+00:02:37,600 --> 00:02:43,500
+But with an architecture where the Sensu Client is responsible for executing it's checks,
+
+30
+00:02:43,500 --> 00:02:47,500
+the number of checks that you can execute scales with the number of hosts you have.
+
+31
+00:02:47,500 --> 00:02:51,200
+Each host is only responsible for executing
+the checks on itself.
+
+32
+00:02:51,600 --> 00:02:54,000
+This is really the key to any scalable monitoring system.
+
+33
+00:02:54,200 --> 00:02:58,200
+And it's true that a lot of other monitoring systems can be re-architected to do this.
+
+34
+00:02:58,200 --> 00:03:02,000
+For example, Check_MK can be architected to do something similar,
+
+35
+00:03:02,000 --> 00:03:04,800
+but Sensu is designed from the ground up to be scalable.
+
+36
+00:03:04,800 --> 00:03:11,000
+The agent is responsible for all the check executions; the server just processes the results.
+
+37
+00:03:11,500 --> 00:03:15,500
+Another aspect of Sensu's architecture that I would like to point out
+
+38
+00:03:15,500 --> 00:03:19,800
+is this concept of client-side configuration.  In a traditional monitoring system,
+
+39
+00:03:19,900 --> 00:03:26,900
+all the check definitions are on the server. The server is responsible for things like:
+
+40
+00:03:26,900 --> 00:03:41,000
+check_web, ssh, memory, etc.  All of this
+is configuration for the server.
+
+41
+00:03:41,000 --> 00:03:45,500
+In Sensu all of this can move to the client;
+
+42
+00:03:46,500 --> 00:03:53,500
+The client can know about what it's supposed to check: memory, web, ssh.
+
+43
+00:03:53,690 --> 00:03:57,500
+By moving the configuration from the
+server to the client
+
+44
+00:03:58,000 --> 00:04:04,500
+you allow configuration management systems or deployment systems to deploy checks
+
+45
+00:04:04,600 --> 00:04:08,700
+with the application.  For example,
+a configuration management system
+
+46
+00:04:08,800 --> 00:04:15,600
+or a deployment system can deploy a web
+server and deploy the check for the web server
+
+47
+00:04:15,600 --> 00:04:22,500
+onto the same host.  In Sensu the server doesn't need to be updated
+
+48
+00:04:22,500 --> 00:04:24,940
+when new checks exist on clients at all.
+
+49
+00:04:24,940 --> 00:04:30,000
+The Sensu server doesn't care, it just
+receives results.
+
+50
+00:04:30,800 --> 00:04:35,600
+When configuration is on the client it allows you to be more flexible
+
+51
+00:04:35,800 --> 00:04:42,000
+and allows you to deploy the checks in a more sane way.  No longer do you have to manually update
+
+52
+00:04:42,100 --> 00:04:48,000
+hostgroups on the server to correlate with deployments on the client.
+
+53
+00:04:49,000 --> 00:04:53,500
+To put it a different way, I like to to use the analogy between the map and the territory.
+
+54
+00:04:53,500 --> 00:05:00,300
+imagine that the configuration for your monitoring system is a map to the  things that are out there in real life.
+
+55
+00:05:00,330 --> 00:05:06,000
+A traditional monitoring system puts the burden of keeping this configuration in sync
+
+56
+00:05:06,000 --> 00:05:16,000
+on the system administrator, on the engineer.  But if the check configuration can be deployed with the host
+
+57
+00:05:16,000 --> 00:05:21,000
+the map of what checks exist on
+which hosts
+
+58
+00:05:21,000 --> 00:05:26,000
+can more accurately represent the territory of what's in real life.
+
+59
+00:05:26,000 --> 00:05:31,500
+Let's put this analogy in more realistic terms. Let's say that you were using
+
+60
+00:05:31,700 --> 00:05:36,500
+Chef or Puppet or Ansible to deploy Apache.  In a more traditional monitoring system,
+
+61
+00:05:36,500 --> 00:05:40,000
+you would use Ansible to deploy Apache to the host
+
+62
+00:05:40,000 --> 00:05:44,500
+and then you would update the server to reflect you did that deployment to the host.
+
+63
+00:05:45,000 --> 00:05:50,500
+Remember, you're keeping the map up-to-date with the territory.
+
+64
+00:05:50,500 --> 00:05:55,730
+But what if you could deploy the monitoring with the application as a whole
+
+65
+00:05:55,730 --> 00:06:00,000
+directly on the host?  And now any server
+that has Apache deployed to it
+
+66
+00:06:00,200 --> 00:06:03,400
+comes with a check_apache.
+
+67
+00:06:03,400 --> 00:06:07,000
+And then the Sensu (client) refreshes
+and then starts checking
+
+68
+00:06:07,000 --> 00:06:12,500
+and sending the results of the check back the server.  The Sensu server doesn't have any configuration.
+
+69
+00:06:12,500 --> 00:06:17,500
+It doesn't know that there are now more web servers, it just responds the results.
+
+70
+00:06:17,500 --> 00:06:22,000
+It requires no configuration
+changes on the Sensu server.
+
+71
+00:06:22,000 --> 00:06:29,000
+You might say that Sensu server's map is automatically updated with the real-life territory.
+
+72
+00:06:29,000 --> 00:06:34,600
+How about a different example? 
+Let's say that you're monitoring multiple hosts
+
+73
+00:06:34,600 --> 00:06:41,000
+and you add a new host.  Your territory
+has now changed, you now have two hosts to check.
+
+74
+00:06:41,000 --> 00:06:45,700
+Who's going to remember to update
+the server-side configuration
+
+75
+00:06:45,700 --> 00:06:49,500
+on a traditional monitoring system to start
+monitoring that new host?
+
+76
+00:06:49,500 --> 00:06:58,000
+Well, either a tool or an engineer will have to keep that map up-to-date
+
+77
+00:06:58,000 --> 00:07:06,479
+with the new territory. It's gotta keep it in sync. But wait, in Sensu, the map and territory
+
+78
+00:07:06,479 --> 00:07:12,000
+are up-to-date already because as soon
+as the Sensu Client on host #2
+
+79
+00:07:12,000 --> 00:07:17,000
+starts up, it automatically registers
+itself with the Sensu server
+
+80
+00:07:17,000 --> 00:07:23,000
+Any checks associated with that hosts are
+automatically deployed and start executing.
+
+81
+00:07:23,000 --> 00:07:28,600
+If you're using subscription-based checks that hosts will automatically start listening
+
+82
+00:07:28,600 --> 00:07:31,500
+for checks for the subscriptions that it has been configured to.
+
+83
+00:07:32,300 --> 00:07:38,200
+No Sensu server configuration changes when hosts are registered.
+
+84
+00:07:38,700 --> 00:07:45,200
+There is no configuration file for Sensu server that lists all the hosts that it's responsible for
+
+85
+00:07:45,700 --> 00:07:51,200
+because there is no such list.  Such a list would constantly be out-of-date.
+
+86
+00:07:51,600 --> 00:07:54,500
+Sensu is designed to accept new hosts on the fly
+
+87
+00:07:54,500 --> 00:08:00,000
+and deregister hosts when needed, at any
+time with no configuration changes.
+
+88
+00:08:00,200 --> 00:08:05,000
+I hope my explanation between the map and the territory is sufficient.
+
+89
+00:08:05,000 --> 00:08:10,700
+It's kind of a hard idea to convey especially over a remote training session,
+
+90
+00:08:11,200 --> 00:08:15,540
+but if you can understand this difference in philosophy between
+
+91
+00:08:15,540 --> 00:08:19,600
+having the hosts responsible for updating
+themselves in the Sensu server
+
+92
+00:08:20,600 --> 00:08:25,000
+contrasted to more traditional monitoring systems where an engineer or tool
+
+93
+00:08:26,200 --> 00:08:30,500
+is burdened with keeping the map, which is the configuration
+
+94
+00:08:30,500 --> 00:08:35,000
+up-to-date with the territory, which is what's out in real life.  You can see that this
+
+95
+00:08:35,000 --> 00:08:42,000
+this design decision allows the architecture itself to be conducive to host and checks coming in and out
+
+96
+00:08:42,000 --> 00:08:46,490
+at will.  Sensu enables this kind of automation by design.
+
+97
+00:08:46,490 --> 00:08:51,200
+Ready for the next kind of crazy idea? 
+Remember that in Sensu, the client
+
+98
+00:08:51,600 --> 00:08:56,800
+can have checks defined and it registers itself with the server components on the fly.
+
+99
+00:08:58,200 --> 00:09:03,200
+But what if I told you that you can enable new checks on the client
+
+100
+00:09:03,600 --> 00:09:07,500
+with no configuration changes and no restarting of the Sensu Client.
+
+101
+00:09:08,500 --> 00:09:14,000
+Analogous to how the Sensu Client dynamically registers itself with the Sensu infrastructure,
+
+102
+00:09:14,500 --> 00:09:19,200
+you can dynamically add new checks to the Sensu Client on the fly
+
+103
+00:09:19,500 --> 00:09:24,500
+The Sensu Client can receive check data for checks that don't even exist yet;
+
+104
+00:09:24,500 --> 00:09:28,300
+they can be dynamically generated.  Let's take a real-life example.
+
+105
+00:09:28,600 --> 00:09:33,000
+Let's say that you're hosting company and you serve many clients
+
+106
+00:09:33,000 --> 00:09:38,100
+and you have a dozen different customers.  And each customer has their own components.
+
+107
+00:09:38,100 --> 00:09:42,700
+Maybe they have their own website, their own webserver, maybe their own email server, who knows.
+
+108
+00:09:43,500 --> 00:09:47,200
+Heck, they may not even have their own server, maybe their own WordPress blog,
+
+109
+00:09:47,500 --> 00:09:48,490
+sky's the limit.
+
+110
+00:09:48,490 --> 00:09:52,500
+Let's say that you wanted a check for
+every single component on the Sensu Client.
+
+111
+00:09:53,200 --> 00:09:55,500
+You might think that you need a file for each one
+
+112
+00:09:55,500 --> 00:09:58,500
+and every time there's a new customer you need to restart the Sensu Client.
+
+113
+00:09:58,900 --> 00:10:03,000
+You certainly could do that. But, you can write your own check,
+
+114
+00:10:04,770 --> 00:10:07,000
+Call it a "meta-check",
+
+115
+00:10:11,260 --> 00:10:17,500
+that's aware of these customers, iterates
+through each one, checks them all individually
+
+116
+00:10:17,900 --> 00:10:20,640
+and then sends the results
+directly to the Sensu Client.
+
+117
+00:10:21,280 --> 00:10:25,620
+It's check data that the Sensu Client didn't
+execute itself,
+
+118
+00:10:26,340 --> 00:10:29,220
+we executed it with meta-check, maybe it's on a cron job,
+
+119
+00:10:29,960 --> 00:10:36,040
+that iterates over each client, each customer, sends the
+results to the Sensu Client
+
+120
+00:10:36,040 --> 00:10:39,520
+and the Sensu Client in turn forwards it on to the Sensu infrastructure.
+
+121
+00:10:40,300 --> 00:10:43,680
+But the Sensu Client isn't configured with each customer
+
+122
+00:10:44,000 --> 00:10:47,520
+and new customers can be added on the fly in the meta-check will iterate over each one.
+
+123
+00:10:48,300 --> 00:10:50,740
+So nothing needs to change
+on the Sensu Client at all.
+
+124
+00:10:51,460 --> 00:10:56,580
+New customers can exist or disappear, Sensu Client configuration donesn't change at all,
+
+125
+00:10:57,000 --> 00:11:01,460
+it just continues to forward on the results
+of this meta-check on every execution.
+
+126
+00:11:02,060 --> 00:11:06,740
+Try to imagine doing this in a more
+traditional monitoring tool; it'd be impossible.
+
+127
+00:11:07,000 --> 00:11:11,600
+You'd somehow have to connect the dots between all your customers and
+
+128
+00:11:12,340 --> 00:11:17,440
+the server components of your monitoring tool. But Sensu makes this really easy.
+
+129
+00:11:17,740 --> 00:11:24,800
+All you have to do is send JSON to localhost:3030. This is a very powerful idea
+
+130
+00:11:24,800 --> 00:11:29,200
+and it's kind of hard to convey again on a white board at an introductory course where everythingis brand new.
+
+131
+00:11:29,520 --> 00:11:33,100
+I just wanted to hint at this capability because it is such a powerful idea
+
+132
+00:11:33,300 --> 00:11:36,680
+that as far as I'm aware doesn't exist on any other monitoring system.
+
+133
+00:11:37,800 --> 00:11:42,520
+I hope this gives you a better idea of what makes Sensu unique and what makes it so powerful.
+
+134
+00:11:43,000 --> 00:11:46,840
+The key feature that I want to get across to you is that in Sensu
+
+135
+00:11:46,980 --> 00:11:51,620
+the territory of what servers are out there and what they have and what checks exist
+
+136
+00:11:52,040 --> 00:11:56,660
+is always in sync with the map that is the Sensu server configuration.
+
+137
+00:11:57,820 --> 00:12:03,880
+New hosts simply exist and register themselves.  New checks can exist on the client
+
+138
+00:12:04,860 --> 00:12:11,260
+and it's no big deal.  The Sensu server will receive data and operate on them as if they always existed.
+
+139
+00:12:11,620 --> 00:12:14,960
+I know for me personally I would never go back to another monitoring system
+
+140
+00:12:15,340 --> 00:12:22,800
+where it's up to the engineer to update the map that is the monitoring tool's configuration.
+
+141
+00:12:24,060 --> 00:12:27,300
+I would never go back to a world where there's a disconnect
+
+142
+00:12:27,520 --> 00:12:30,880
+between the monitoring configuration and the application.
+
+143
+00:12:31,720 --> 00:12:35,840
+In the end the key selling point to Sensu for me is the flexibility.
+
+144
+00:12:36,460 --> 00:12:42,340
+You can design systems with Sensu and have them monitor in ways that would be very difficult
+
+145
+00:12:42,680 --> 00:12:46,420
+or just impossible with more traditional,
+centralized monitoring systems.
+
+146
+00:12:47,400 --> 00:12:50,260
+I hope this gives you a better idea of what
+makes Sensu unique and different.
+
+147
+00:12:50,880 --> 00:12:56,320
+If this is all a blur, don't worry in the rest of
+course, hopefully it will become more clear to you
+
+148
+00:12:56,620 --> 00:13:01,140
+how Sensu works and you'll learn more by
+going through the actual exercises,
+
+149
+00:13:01,800 --> 00:13:05,640
+watching me configure the components and putting them together and eventually
+
+150
+00:13:05,640 --> 00:13:09,680
+everything will click when you go from an actual check that executes on the client
+
+151
+00:13:10,100 --> 00:13:14,240
+to an actual email in your inbox saying that something has failed or something has been resolved.
+

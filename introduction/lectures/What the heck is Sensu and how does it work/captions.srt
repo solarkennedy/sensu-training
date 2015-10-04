@@ -1,0 +1,718 @@
+1
+00:00:00,000 --> 00:00:05,569
+Welcome to the first lecture on
+installing Sensu, but before we get
+
+2
+00:00:05,569 --> 00:00:11,120
+started on installing or configuring any
+files, the first thing we need to cover
+
+3
+00:00:11,120 --> 00:00:15,920
+is the architecture.  Sensu's unique
+architecture is one of the most
+
+4
+00:00:15,920 --> 00:00:21,740
+confusing or maybe new things about Sensu that people get wrong as a beginner.
+
+5
+00:00:21,740 --> 00:00:26,230
+It's important when you're discovering
+or learning about the system for the
+
+6
+00:00:26,230 --> 00:00:30,369
+first time that you get a really good
+grasp of how Sensu actually works in
+
+7
+00:00:30,369 --> 00:00:35,430
+the background because that mental model
+helps you understand the system and its
+
+8
+00:00:35,430 --> 00:00:39,829
+failure modes.  It also helps you take
+advantage of the good parts about Sensu;
+
+9
+00:00:39,829 --> 00:00:43,989
+taking advantage of flexibility and
+designing things the way you want them to be
+
+10
+00:00:43,989 --> 00:00:51,050
+designed. Sensu's flexible, one thing
+well kind of philosophy makes that easy
+
+11
+00:00:51,050 --> 00:00:54,590
+but it also means that there's a lot of
+components to learn and understand.
+
+12
+00:00:54,590 --> 00:01:00,329
+Hopefully you'll be able to work with me
+and understand all these components
+
+13
+00:01:00,329 --> 00:01:03,550
+individually and then when we will bring them
+all together you'll be able to
+
+14
+00:01:03,550 --> 00:01:10,670
+understand how they all operate as a whole.  For now though, let's deep dive and look at
+
+15
+00:01:10,670 --> 00:01:15,549
+each component and how it interacts and
+really get a solid understanding about
+
+16
+00:01:15,549 --> 00:01:22,310
+how Sensu works at the architectural level.  To do that, I going to use the whiteboard and good
+
+17
+00:01:22,310 --> 00:01:28,990
+old-fashioned whiteboard markers to help you get that understanding.
+
+18
+00:01:28,990 --> 00:01:35,570
+So Sensu architecture.  Let's start with the Sensu Client.
+
+19
+00:01:40,560 --> 00:01:47,280
+The Sensu Client is the daemon or agent that runs on every server that you want to monitor.  It's written in
+
+20
+00:01:47,280 --> 00:01:52,530
+Ruby, so it can run on Linux, BSD, Windows.  The Client is the thing that actually
+
+21
+00:01:52,530 --> 00:02:04,370
+executes checks.  Checks are things like
+the scripts that might be for checking
+
+22
+00:02:04,370 --> 00:02:10,670
+http or checking memory.  Now even though it runs on the Client, it doesn't necessarily
+
+23
+00:02:10,670 --> 00:02:15,950
+rule out the case where the Sensu Client is checking external resources.  So if
+
+24
+00:02:15,950 --> 00:02:25,610
+you have something outside, like Google, some switch or just something external, Sensu Client
+
+25
+00:02:25,610 --> 00:02:34,470
+can still check http or whatever you need it to do.  But where it really
+
+26
+00:02:34,470 --> 00:02:39,840
+shines is being able to check internal
+things; this might be like memory or
+
+27
+00:02:39,840 --> 00:02:46,000
+processes or something like that.  In my
+experience these are very common use cases for
+
+28
+00:02:46,000 --> 00:02:52,510
+monitoring systems to check internal things to a server.  The Sensu Client can
+
+29
+00:02:52,510 --> 00:03:03,430
+schedule its own checks, so it's on a
+periodic timer.  So the Sensu Client
+
+30
+00:03:03,430 --> 00:03:08,989
+can be responsible for its own checks and
+executing them on a timely fashion
+
+31
+00:03:08,989 --> 00:03:13,050
+it doesn't need the Sensu server to tell
+it what to check and when.  These are
+
+32
+00:03:13,050 --> 00:03:18,150
+called "standalone" checks.  But don't worry about that for now, just be aware that
+
+33
+00:03:18,150 --> 00:03:21,700
+the Sensu Client could be totally
+independent in this case.
+
+34
+00:03:21,700 --> 00:03:32,720
+But the Sensu Client can't act and
+operate in a vacuum.  It needs someplace
+
+35
+00:03:32,720 --> 00:03:42,100
+to put the results of those checks, 
+that's RabbitMQ.  RabbitMQ serves as the
+
+36
+00:03:42,100 --> 00:03:47,940
+central message bus between Sensu
+components.  And I know you might be thinking:
+
+37
+00:03:47,940 --> 00:03:52,810
+"Kyle, I came here to learn about Sensu, what does RabbitMQ have to do with any of this.  Is this yet
+
+38
+00:03:52,810 --> 00:03:53,850
+another technology I have to
+
+39
+00:03:53,850 --> 00:04:00,400
+learn?"  It's true that Sensu depends on
+external component to do its message
+
+40
+00:04:00,400 --> 00:04:05,830
+passing and at first glance beginners might
+think that this is an unnecessary burden
+
+41
+00:04:05,830 --> 00:04:12,740
+and it certainly increases the barrier
+to entry on Sensu but long-term I
+
+42
+00:04:12,740 --> 00:04:18,660
+think you'll agree that not reinventing the
+wheel and allowing an external component
+
+43
+00:04:18,660 --> 00:04:25,550
+that does its own thing really well is
+essential for a long-term, scalable and
+
+44
+00:04:25,550 --> 00:04:30,450
+sustainable system.  Believe it or not, all
+monitoring systems have some sort of
+
+45
+00:04:30,450 --> 00:04:36,230
+internal queue.  Sensu just happens to
+not bother to reinvent that wheel and
+
+46
+00:04:36,230 --> 00:04:41,300
+it takes advantage of the awesome and
+very reliable queue that is RabbitMQ.
+
+47
+00:04:41,300 --> 00:04:46,920
+So the Sensu Client connects to RabbitMQ
+
+48
+00:04:46,920 --> 00:04:54,060
+and outputs the results of the checks
+that it executes.  Remember the Sensu Client is
+
+49
+00:04:54,060 --> 00:04:59,730
+the only component executes checks and
+the Sensu Client only talks to RabbitMQ
+
+50
+00:04:59,730 --> 00:05:05,970
+and deposits the results of those
+checks.  RabbitMQ provides a really good
+
+51
+00:05:05,970 --> 00:05:10,810
+separation between the Sensu Client
+and other components.  It's a good seam.
+
+52
+00:05:10,810 --> 00:05:16,500
+The Sensu Client can continue to
+operate on the checks, deposit results into
+
+53
+00:05:16,500 --> 00:05:21,400
+RabbitMQ completely independent of
+all the other components; it just keeps
+
+54
+00:05:21,400 --> 00:05:26,490
+on ticking even if the Sensu server is
+down your stuff is still being checked.
+
+55
+00:05:26,490 --> 00:05:31,650
+Next let's talk about the Sensu server.
+The Sensu server is a daemon that
+
+56
+00:05:31,650 --> 00:05:40,280
+takes the results off of RabbitMQ and
+operates on them.
+
+57
+00:05:40,280 --> 00:05:48,100
+The Sensu server executes "handlers"
+based on the results of those checks.
+
+58
+00:05:57,600 --> 00:06:03,660
+Those "handlers" are scripts that take the
+results of the check and operate on them.
+
+59
+00:06:03,660 --> 00:06:08,500
+They might be things like sending you an
+email or talking to PagerDuty.
+
+60
+00:06:08,900 --> 00:06:14,400
+The Sensu server itself actually doesn't know anything about email, doesn't know anything about PagerDuty
+
+61
+00:06:14,400 --> 00:06:17,790
+doesn't know anything about
+actually doing things with checks
+
+62
+00:06:17,790 --> 00:06:22,630
+other then sending them to the handlers for processing.  This is another thing that
+
+63
+00:06:22,630 --> 00:06:26,110
+makes Sensu a little hard to get into
+because it doesn't have any kind of
+
+64
+00:06:26,110 --> 00:06:29,700
+native functionality for sending email out of
+the box.
+
+65
+00:06:29,700 --> 00:06:38,000
+But again, long-term a system that doesn't burden itself with having to know how to send email
+
+66
+00:06:38,000 --> 00:06:45,700
+is a sustainable system.  It delegates
+all the necessary plumbing to sending email
+
+67
+00:06:45,700 --> 00:06:51,800
+to a handler, like an email handler.  That does mean that out of the box it can't send email.
+
+68
+00:06:51,800 --> 00:06:56,380
+But that's ok.  You're taking this introductory course, I'll show you how to configure
+
+69
+00:06:56,380 --> 00:07:01,500
+Sensu to send email to you.  The Sensu
+server also can do centralized
+
+70
+00:07:01,500 --> 00:07:05,770
+scheduling of checks.  Even though the
+Sensu server doesn't actually execute
+
+71
+00:07:05,770 --> 00:07:10,210
+those checks it can ask Sensu Client to execute them on their behalf.
+
+72
+00:07:14,200 --> 00:07:15,480
+So it can put
+
+73
+00:07:15,480 --> 00:07:20,390
+onto RabbitMQ
+
+74
+00:07:20,390 --> 00:07:26,250
+that the Sensu Client is trying to pick up on, that
+the Sensu Client will respond to.
+
+75
+00:07:26,250 --> 00:07:28,400
+Sensu Clients are tagged for certain
+subscriptions.
+
+76
+00:07:28,400 --> 00:07:33,000
+The Sensu server might ask for a check HTTP to occur on all web servers.
+
+77
+00:07:37,500 --> 00:07:41,000
+Any Sensu Client that's been tagged with web
+
+78
+00:07:43,500 --> 00:07:49,000
+will up on that request, execute the check and put that check result back on the RabbitMQ.
+
+79
+00:07:50,100 --> 00:07:55,700
+These types of checks are called
+"subscription" checks where as the previous one
+
+80
+00:07:55,700 --> 00:07:59,000
+where the Sensu Client was responsible for it's own checks on a timer
+
+81
+00:07:59,000 --> 00:08:04,540
+are "standalone" checks.  This gives you
+the maximum flexibility for being able to
+
+82
+00:08:04,540 --> 00:08:08,710
+monitor things the way that you think
+they should be monitored.  If you think that
+
+83
+00:08:08,710 --> 00:08:12,910
+the Sensu Client should be responsible
+for all of its checks that's totally
+
+84
+00:08:12,910 --> 00:08:18,760
+legit or if you prefer the Sensu
+server to have all the configuration
+
+85
+00:08:18,760 --> 00:08:23,890
+for what checks run on what servers you can do that too.  I personally prefer the
+
+86
+00:08:23,890 --> 00:08:28,520
+standalone checks only on Sensu
+clients and I don't do any server-side
+
+87
+00:08:28,520 --> 00:08:31,920
+checks.  I find that gives me the most
+flexibility because it allows me to use
+
+88
+00:08:31,920 --> 00:08:36,390
+a configuration management system to deposit the checks on the client
+
+89
+00:08:36,390 --> 00:08:40,820
+and only the clients that I determine in my
+configuration management system to get
+
+90
+00:08:40,820 --> 00:08:44,310
+those checks get them, but it does
+mean that I had to use a configuration
+
+91
+00:08:44,310 --> 00:08:49,690
+management system to orchestrate it. Server-side checks work well if you're kind of making those
+
+92
+00:08:49,690 --> 00:08:55,070
+checks by hand and you have well
+formed tag's, your web servers are
+
+93
+00:08:55,070 --> 00:09:00,070
+well-defined.  Sometimes in the real world
+it's not that clear cut.
+
+94
+00:09:00,140 --> 00:09:05,680
+But in Sensu, you can do it either way.  If you can believe it, the Sensu server, handlers
+
+95
+00:09:05,680 --> 00:09:13,510
+and the client are all stateless.  They
+don't store any state and can be
+
+96
+00:09:13,510 --> 00:09:20,230
+scaled easily.  Sensu uses an external
+component to store it states, that
+
+97
+00:09:20,230 --> 00:09:28,210
+component is Redis.  Redis is a general
+key-value store that allows Sensu to
+
+98
+00:09:28,210 --> 00:09:33,200
+flexibly store any of its states that it needs
+into some sort of persistent database.
+
+99
+00:09:35,500 --> 00:09:39,100
+Individual server components
+don't store any of their state internally.
+
+100
+00:09:39,100 --> 00:09:42,000
+Any persistent state is
+in Redis.
+
+101
+00:09:47,000 --> 00:09:53,330
+These are things like check history or which things are silenced and you might be thinking:
+
+102
+00:09:53,330 --> 00:09:58,200
+"well why is there yet another component, why can't Sensu just store it's own state internally?"
+
+103
+00:09:59,000 --> 00:10:02,230
+Well if you've ever built a
+large scale web application you might
+
+104
+00:10:02,230 --> 00:10:07,800
+think to yourself that storing state is "evil" and in some sense it is.
+
+105
+00:10:08,500 --> 00:10:13,890
+Having Sensu store it's state in an external
+database not only reduces the code complexity of
+
+106
+00:10:13,890 --> 00:10:18,000
+Sensu itself but also allows Redis
+to do what it does well.
+
+107
+00:10:18,600 --> 00:10:21,410
+Having Sensu store it's state externally allows
+
+108
+00:10:21,410 --> 00:10:27,460
+the Sensu server component to be scaled
+out.  By not storing it's state internally you
+
+109
+00:10:27,460 --> 00:10:31,820
+can have multiple Sensu servers all
+using the same Redis and operating in
+
+110
+00:10:31,820 --> 00:10:36,200
+parallel to be able to operate on more
+checks as they come in.
+
+111
+00:10:37,200 --> 00:10:42,290
+This gives the Sensu component's really good scaling properties and again it's one of those
+
+112
+00:10:42,290 --> 00:10:46,960
+only do one thing well kind of
+philosophies where the Sensu server can
+
+113
+00:10:46,960 --> 00:10:51,660
+reuse the existing state-storing
+goodness of Redis.  Would you believe that the
+
+114
+00:10:51,660 --> 00:10:56,910
+the Sensu server doesn't have any kind of
+web component.  Again it comes down to that
+
+115
+00:10:56,910 --> 00:11:01,720
+one thing well philosophy. The Sensu server's only job is to take results from
+
+116
+00:11:01,720 --> 00:11:05,660
+RabbitMQ and operate on those handlers and then store the results in a long-term
+
+117
+00:11:05,660 --> 00:11:10,819
+results in Redis.  There's another
+component
+
+118
+00:11:10,819 --> 00:11:16,500
+That serves the API front-end for Sensu.  It's just called the Sensu API.
+
+119
+00:11:21,300 --> 00:11:33,860
+The Sensu API talks with Redis and RabbitMQ and provides
+
+120
+00:11:33,860 --> 00:11:39,500
+a RESTful interface to the internals of
+Sensu.  Its job is just to talk to these components
+
+121
+00:11:39,500 --> 00:11:43,900
+It also stores no state
+and you can also scale it to run as many
+
+122
+00:11:43,920 --> 00:11:47,500
+API processes as you need to scale out
+your infrastructure.
+
+123
+00:11:48,000 --> 00:11:52,329
+The Sensu API is what
+empowers external applications to
+
+124
+00:11:52,360 --> 00:12:05,400
+integrate with Sensu.  For example: a dashboard or a CLI.
+
+125
+00:12:08,900 --> 00:12:18,500
+All they have to do is talk to the Sensu API.  They don't need to know anything about RabbitMQ or Redis.
+
+126
+00:12:18,500 --> 00:12:25,200
+They have a nice, well-defined RESTful interface to interact with.  That's an overview of the Sensu architecture.
+
+127
+00:12:25,500 --> 00:12:33,440
+I apologize for the terrible handwriting and white board.  If your organization's
+like mine this is traditionally how
+
+128
+00:12:33,440 --> 00:12:38,540
+complicated systems are explained in real
+life.  So I wanted to kind of emulate that with you
+
+129
+00:12:38,540 --> 00:12:43,500
+for better for worse.  As you can see
+there's a lot of parts here.
+
+130
+00:12:44,140 --> 00:12:48,000
+Sensu was built with small components that do dedicated jobs.
+
+131
+00:12:49,500 --> 00:12:54,000
+It uses proven, existing solutions where possible to do the heavy lifting.
+
+132
+00:12:54,000 --> 00:12:59,940
+The end result is that as an engineer you have to understand all of these components as a whole.
+
+133
+00:12:59,940 --> 00:13:01,800
+If you ask me this is a good thing.
+
+134
+00:13:01,800 --> 00:13:06,500
+Where as more traditional monitoring systems treat all these components as a single whole,
+
+135
+00:13:06,500 --> 00:13:14,000
+one big black box, that you have no visibility into and no way to interact with directly.
+
+136
+00:13:14,500 --> 00:13:19,670
+Sensu splits these pieces out; you can scale them, individually you can query them directly
+
+137
+00:13:19,670 --> 00:13:23,500
+and you can integrate them with your
+existing infrastructure.
+
+138
+00:13:24,500 --> 00:13:26,110
+It doesn't reinvent the wheel
+
+139
+00:13:26,110 --> 00:13:30,800
+and each component does one thing well To me this is really refreshing.
+
+140
+00:13:31,000 --> 00:13:36,000
+There's no single mega process that does
+everything and each thing you can run multiples of
+
+141
+00:13:36,500 --> 00:13:40,720
+for high availability and scaling.  If you can appreciate the exploded
+
+142
+00:13:40,720 --> 00:13:44,690
+architecture and the one thing well
+philosophy I think you'll find that
+
+143
+00:13:44,690 --> 00:13:48,300
+you'll never want to go back to a
+situation where all of your monitoring
+
+144
+00:13:48,300 --> 00:13:54,000
+is handled under a single process that
+if it dies nothing happens.
+
+145
+00:13:54,000 --> 00:13:58,820
+But the hard part is understanding each of these components and how they act and interact
+
+146
+00:13:58,820 --> 00:14:01,000
+together to make Sensu work.
+
+147
+00:14:02,000 --> 00:14:07,370
+But that's what this course is for.  To help explain how this works.
+
+148
+00:14:07,370 --> 00:14:15,720
+And don't fret, we'll cover each of these pieces and the dashboard and the Sensu handler
+
+149
+00:14:15,730 --> 00:14:19,700
+for sending email to give you a complete
+system when you're done
+
+150
+00:14:19,700 --> 00:14:25,000
+that you could actually use to monitor things for real.  This is not an academic course.
+
+151
+00:14:25,000 --> 00:14:29,000
+This is an engineering course for building real systems that do real work.
+
+152
+00:14:29,000 --> 00:14:36,500
+If this overview is too fast or if my handwriting is too bad you can absolutely watch this lecture again!
+
+153
+00:14:37,000 --> 00:14:42,500
+Watch it as many times until you have a
+feeling for how these components actually interact
+
+154
+00:14:42,500 --> 00:14:46,630
+Again, Sensu's architecture is one
+of the more complex aspects Sensu
+
+155
+00:14:46,630 --> 00:14:52,000
+and it's essential for you to understand what's going on here
+
+156
+00:14:52,600 --> 00:14:54,780
+So feel free to review this as
+needed.
+
