@@ -1,0 +1,254 @@
+1
+00:00:00,000 --> 00:00:03,060
+Welcome to the lecture on installing the
+Sensu Client.
+
+2
+00:00:03,480 --> 00:00:06,780
+If you recall, previously we installed installed Sensu server, Sensu API,
+
+3
+00:00:07,100 --> 00:00:09,600
+we also setup Redis and RabbitMQ.
+
+4
+00:00:10,300 --> 00:00:15,000
+Now we're ready to actually set up a Sensu Client that will actually execute checks,
+
+5
+00:00:15,500 --> 00:00:20,460
+respond to them and show up in the API and dashboard. Let's do that now.
+
+6
+00:00:21,000 --> 00:00:22,740
+We already have the package installed.
+
+7
+00:00:22,740 --> 00:00:26,180
+Remember it's an omnibus package; there's not a separate Sensu Client
+
+8
+00:00:26,600 --> 00:00:31,000
+package to install so we can
+use that same Sensu omnibus package,
+
+9
+00:00:31,740 --> 00:00:34,280
+but we need some configuration. So let's do that now.
+
+10
+00:00:40,740 --> 00:00:46,740
+You can see that put the configuration into /etc/sensu/conf.d/
+
+11
+00:00:48,160 --> 00:00:49,940
+And it's this "client.json".
+
+12
+00:00:52,280 --> 00:00:55,620
+If you look at that just a little bit some important things to note:
+
+13
+00:00:55,620 --> 00:01:00,320
+Name is the name of the client, "test"  from boilerplate from the docs.
+
+14
+00:01:00,320 --> 00:01:02,580
+Let's fill this in with something a little fancier.
+
+15
+00:01:11,980 --> 00:01:15,300
+The address is free-form as far as I know
+
+16
+00:01:15,840 --> 00:01:20,400
+Remember that the Sensu Client's job is to put results on to the RabbitMQ host.
+
+17
+00:01:20,740 --> 00:01:22,760
+So as long as it can connect to RabbitMQ
+
+18
+00:01:23,340 --> 00:01:27,940
+there doesn't need to be actual any TCP communication between the client and server.
+
+19
+00:01:28,620 --> 00:01:31,120
+RabbitMQ serves as the bridge
+between the two,
+
+20
+00:01:31,560 --> 00:01:34,220
+so they could even be on separate networks and it won't really matter.
+
+21
+00:01:36,080 --> 00:01:42,860
+Subscriptions represent the lists of tags that this client will respond to.
+
+22
+00:01:43,080 --> 00:01:46,820
+If you recall "test" is the same tag that we assigned that check
+
+23
+00:01:47,220 --> 00:01:49,360
+when we configured the server
+with the check_mem.
+
+24
+00:01:50,000 --> 00:01:54,000
+So because the check_mem is going to be associated with a certain "test" tag
+
+25
+00:01:54,000 --> 00:01:56,340
+and our client will subscribe to that test tag,
+
+26
+00:01:57,060 --> 00:02:04,240
+our client should be using that check memory thing that the Sensu server is exporting.
+
+27
+00:02:06,320 --> 00:02:11,500
+Now that we have that client installed, let's go ahead and get the check-mem.sh command.
+
+28
+00:02:14,260 --> 00:02:20,780
+If you recall from our architecture diagram the Sensu Client is the only thing that actually execute checks.
+
+29
+00:02:22,060 --> 00:02:26,200
+In this example we have the Sensu server and Sensu client on the same machine,
+
+30
+00:02:26,560 --> 00:02:28,780
+but if the Sensu Client was on a
+different machine
+
+31
+00:02:29,520 --> 00:02:33,140
+the actual check scripts only need to exist on that client.
+
+32
+00:02:40,280 --> 00:02:44,580
+and just in case, we need to make everything readable by Sensu.
+
+33
+00:02:46,900 --> 00:02:49,020
+Now we're ready to actually start
+this client.
+
+34
+00:02:53,800 --> 00:02:54,840
+Let's see if it is running.
+
+35
+00:02:58,000 --> 00:03:00,980
+You can see that on this box, because we have the same
+
+36
+00:03:01,280 --> 00:03:04,840
+pieces of infrastructure. We have the Sensu server running from before, and the Sensu API.
+
+37
+00:03:05,160 --> 00:03:07,360
+And now we have this client running, we just started it up.
+
+38
+00:03:09,420 --> 00:03:10,760
+Let's take a look at the logs.
+
+39
+00:03:13,480 --> 00:03:14,920
+You can probably guess where they are by now.
+
+40
+00:03:25,600 --> 00:03:28,420
+See it started up, loaded some configuration and
+
+41
+00:03:30,120 --> 00:03:33,200
+here you can see it actually received some check requests.
+
+42
+00:03:33,400 --> 00:03:37,500
+These are coming from the server based
+on those tags that we issued, the test tag.
+
+43
+00:03:39,320 --> 00:03:41,940
+Here the client is actually publishing the result of that check.
+
+44
+00:03:42,880 --> 00:03:47,160
+you see that it's coming up: "MEM OK - free system memory 256 MB".
+
+45
+00:03:48,200 --> 00:03:54,700
+So the Sensu Client is responding to these check requests
+
+46
+00:03:54,700 --> 00:03:57,600
+and the publishing the check
+results back on the RabbitMQ for processing.
+
+47
+00:03:58,320 --> 00:04:03,000
+That's all the client does is execute checks and put the results on the RabbitMQ.
+
+48
+00:04:03,560 --> 00:04:06,240
+And you can see it's already doing that based on the configuration files we've given it.
+
+49
+00:04:09,560 --> 00:04:11,020
+Let's go ahead and make sure it will start on boot.
+
+50
+00:04:19,120 --> 00:04:23,440
+You can see that the Sensu Client package is part of the same
+
+51
+00:04:23,660 --> 00:04:28,140
+Sensu omnibus package.  So installing our remote host will pretty much be
+the same thing
+
+52
+00:04:28,640 --> 00:04:33,800
+except they also need that one configuration file for connecting to RabbitMQ.
+
+53
+00:04:33,800 --> 00:04:38,960
+Remember RabbitMQ is the only thing that the Sensu client needs to connect to be useful.
+
+54
+00:04:39,620 --> 00:04:45,340
+We got away with reusing the exact
+same RabbitMQ configuration file we had already,
+
+55
+00:04:47,520 --> 00:04:50,920
+but that was in this: "config.json" here.
+
+56
+00:04:51,680 --> 00:04:57,980
+But if you were installing more Sensu clients you at the very least need this piece of configuration data
+
+57
+00:04:58,240 --> 00:05:03,120
+available to those remote Sensu Clients so they know where to put the results of their checks.
+
+58
+00:05:03,520 --> 00:05:07,380
+and where to listen to for new check requests.
+
+59
+00:05:08,880 --> 00:05:14,120
+"localhost" will be different in that case because the remote Sensu Client on different hosts
+
+60
+00:05:14,540 --> 00:05:18,260
+won't be connecting to "localhost" for their RabbitMQ they'll be connecting to some sort of
+
+61
+00:05:18,620 --> 00:05:22,980
+shared RabbitMQ. In theory, this server wherever the RabbitMQ is running.
+

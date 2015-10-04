@@ -1,0 +1,291 @@
+1
+00:00:01,500 --> 00:00:04,600
+Welcome to the lecture on installing a Sensu dashboard.
+
+2
+00:00:05,700 --> 00:00:08,920
+Would you believe that out of the box Sensu doesn't come with a dashboard?
+
+3
+00:00:09,900 --> 00:00:10,520
+Surprised?
+
+4
+00:00:11,460 --> 00:00:12,100
+You shouldn't be.
+
+5
+00:00:13,220 --> 00:00:18,220
+Remember Sensu's all about flexibility and modularized components that to do one thing well.
+
+6
+00:00:19,560 --> 00:00:22,760
+It's refreshing to me that Sensu doesn't provide a dashboard
+
+7
+00:00:22,760 --> 00:00:25,200
+because that means that it's API is well formed
+
+8
+00:00:25,860 --> 00:00:30,920
+and ready to integrate with any kind of external component that you might need
+
+9
+00:00:31,280 --> 00:00:36,340
+including a dashboard or a CLI or something custom.
+
+10
+00:00:37,220 --> 00:00:43,040
+in other words Sensu's decoupling philosophy means that you can use any kind of external component
+
+11
+00:00:43,560 --> 00:00:47,180
+including something in-house and it will work.
+
+12
+00:00:48,300 --> 00:00:51,300
+If you've got something fancy you want to integrate Sensu with, go for it.
+
+13
+00:00:51,740 --> 00:00:57,600
+The Sensu API is well constructed and easy to integrate with.
+
+14
+00:00:59,400 --> 00:01:05,980
+For most people, using the standard, open source Uchiwa dashboard works well for them.
+
+15
+00:01:06,560 --> 00:01:08,080
+So that's what we'll do in this lecture.
+
+16
+00:01:09,600 --> 00:01:13,200
+The official Sensu documentation
+references two different dashboards:
+
+17
+00:01:13,720 --> 00:01:15,840
+Uchiwa, which is the open sourced version
+
+18
+00:01:16,360 --> 00:01:20,460
+and then there's Sensu Enterprise Dashboard, that's the proprietary Version.
+
+19
+00:01:22,160 --> 00:01:24,820
+Being an introductory course we're gonna stick with the open source one.
+
+20
+00:01:25,380 --> 00:01:28,420
+The enterprise one has more
+advanced features
+
+21
+00:01:29,420 --> 00:01:33,580
+for things like LDAP and fancy fine grained access controls,
+
+22
+00:01:34,560 --> 00:01:37,180
+but we won't need these for this introductory video.
+
+23
+00:01:38,360 --> 00:01:41,740
+If you are interested in the enterprise dashboard there is a later lecture
+
+24
+00:01:41,740 --> 00:01:45,880
+that will cover all the differences between the enterprise and open-source offerings.
+
+25
+00:01:46,820 --> 00:01:48,740
+Let's go ahead and install Uchiwa.
+
+26
+00:01:51,480 --> 00:01:56,500
+Uchiwa is available from the existing Sensu repositories you've already enabled.
+
+27
+00:01:59,660 --> 00:02:00,900
+So it's very easy to install.
+
+28
+00:02:01,580 --> 00:02:03,440
+Let's take a look at the actual package.
+
+29
+00:02:08,240 --> 00:02:14,660
+It's got some files, but take a look you can see the source code, it is in Go.
+
+30
+00:02:16,800 --> 00:02:19,100
+The frontend is in javascript,
+
+31
+00:02:21,560 --> 00:02:22,580
+and then there's the binary.
+
+32
+00:02:24,700 --> 00:02:27,560
+Let's look at the configuration file that it provided for us.
+
+33
+00:02:37,200 --> 00:02:42,540
+As you can see it's hinting here that Uchiwa is designed to be multi-site aware.
+
+34
+00:02:43,400 --> 00:02:47,880
+You could declare multiple sites and Uchiwa will provide that kind of
+
+35
+00:02:48,740 --> 00:02:51,700
+single pane of glass to show you all of them together.
+
+36
+00:02:53,200 --> 00:02:59,260
+This is pretty handy as you scale out Sensu to monitor multiple data centers or multiple regions.
+
+37
+00:02:59,620 --> 00:03:00,380
+It's pretty handy.
+
+38
+00:03:01,520 --> 00:03:05,880
+For this introductory course we only have one site just localhost so we don't need this second one.
+
+39
+00:03:09,840 --> 00:03:14,400
+This entry here represents the actually API endpoint.
+
+40
+00:03:15,160 --> 00:03:16,440
+For us this is the localhost.
+
+41
+00:03:18,580 --> 00:03:21,680
+And "site1" is fine, I'm just gonna call it also localhost.
+
+42
+00:03:25,420 --> 00:03:31,640
+you should take note here that the default binding is on all IPs, on port 3000.
+
+43
+00:03:32,700 --> 00:03:35,300
+And if it wasn't obvious, it is HTTP.
+
+44
+00:03:37,720 --> 00:03:40,100
+Ok, let's go ahead and start Uchiwa.
+
+45
+00:03:45,920 --> 00:03:50,580
+You saw that it listens on port 3000 so let's see if we can load it in our web browser.
+
+46
+00:03:53,700 --> 00:03:54,660
+It's not working.
+
+47
+00:03:56,000 --> 00:03:58,200
+Well, let's do some troubleshooting.
+
+48
+00:04:00,400 --> 00:04:01,420
+Is Uchiwa running?
+
+49
+00:04:07,040 --> 00:04:07,560
+It isn't.
+
+50
+00:04:08,540 --> 00:04:09,460
+Let's look at the logs
+
+51
+00:04:11,740 --> 00:04:13,760
+The log for Uchiwa is in /var/log/
+
+52
+00:04:14,320 --> 00:04:18,540
+There's an "uchiwa.er" and a "uchiwa.log".
+
+53
+00:04:19,200 --> 00:04:21,980
+Looks like there's some contents of "uchiwa.log" so let's look at that.
+
+54
+00:04:26,680 --> 00:04:28,120
+JSON output again
+
+55
+00:04:30,300 --> 00:04:32,660
+Here's the smoking gun:
+
+56
+00:04:34,300 --> 00:04:36,940
+"couldn't read uchiwa.json decoding the file."
+
+57
+00:04:37,720 --> 00:04:42,040
+remember when I said that JSON is for machines and humans aren't very good at
+
+58
+00:04:42,540 --> 00:04:47,260
+editing them?  Well, it's true.
+
+59
+00:04:48,000 --> 00:04:54,740
+Here's a good opportunity to use that "jq" command again: "jq . uchiwa.json"
+
+60
+00:04:55,400 --> 00:05:00,800
+Here it gives a closer error here is line 9, column 3. So let's take a look at that...
+
+61
+00:05:04,860 --> 00:05:08,680
+Although it's pretty subtle the
+error here is that I have a trailing comma.
+
+62
+00:05:19,800 --> 00:05:22,840
+And now it prints out ok. Let's try to start it again.
+
+63
+00:05:24,940 --> 00:05:26,960
+Let's just check that it is actually running.
+
+64
+00:05:28,320 --> 00:05:28,960
+It is.
+
+65
+00:05:34,320 --> 00:05:35,220
+And we're back up.
+
+66
+00:05:37,560 --> 00:05:40,240
+Let's take a look at our API endpoints here.
+
+67
+00:05:40,900 --> 00:05:46,560
+We have one endpoint, in Uchiwa the front end is described as data centers.
+
+68
+00:05:47,420 --> 00:05:48,100
+It is connected.
+
+69
+00:05:50,340 --> 00:05:54,060
+We have one client, "mycoolhost" from when we originally set up the client.
+
+70
+00:05:56,240 --> 00:05:58,840
+And we have a check, that memory check that we set up originally.
+
+71
+00:06:00,420 --> 00:06:04,240
+In the next lecture we'll cover the ins and outs of Uchiwa in more depth,
+
+72
+00:06:04,720 --> 00:06:09,700
+but for now this is the basic installation and troubleshooting of Uchiwa.
+

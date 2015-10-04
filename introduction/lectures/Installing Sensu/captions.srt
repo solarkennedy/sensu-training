@@ -1,0 +1,380 @@
+1
+00:00:00,000 --> 00:00:02,600
+Welcome to lecture on installing Sensu itself.
+
+2
+00:00:03,460 --> 00:00:09,360
+Now that we have the requisite components RabbitMQ and Redis installed, now it's time to install Sensu proper.
+
+3
+00:00:11,120 --> 00:00:14,380
+As before I'm gonna be following the official documentation on how to do this
+
+4
+00:00:14,680 --> 00:00:17,860
+which I recommend you do as well for your first
+time after all this is an introductory
+
+5
+00:00:17,869 --> 00:00:23,630
+course. Sensu is convenient in the sense that it provides its own repositories make it
+
+6
+00:00:23,630 --> 00:00:27,830
+easier to stay up to date. So let's install those repos...
+
+7
+00:00:46,860 --> 00:00:50,040
+Now we have the repositories we can
+actually install sensu...
+
+8
+00:01:08,160 --> 00:01:14,760
+As an engineer, you need to know that Sensu is deployed via an "omnibus" package. What that
+
+9
+00:01:14,760 --> 00:01:18,220
+means is that the package itself
+contains every file it needs to run
+
+10
+00:01:18,220 --> 00:01:22,810
+including its own Ruby interpreter. Let's
+take a look at the package and see what
+
+11
+00:01:22,810 --> 00:01:24,590
+files it has...
+
+12
+00:01:28,300 --> 00:01:31,740
+Some.. "/etc" files...
+
+13
+00:01:33,120 --> 00:01:35,240
+Some.. shared... but most of it is going to be in
+
+14
+00:01:35,240 --> 00:01:39,700
+"/opt/sensu", and a lot of it in the "embedded" folder.
+
+15
+00:01:39,710 --> 00:01:44,910
+This is the embedded Ruby interpreter and all the gems that Sensu requires
+
+16
+00:01:44,910 --> 00:01:50,330
+to run, including the components necessary to run the sensu-api, the sensu-server
+
+17
+00:01:50,330 --> 00:01:54,490
+sensu-client. That doesn't mean that you have to run each of these components it's just
+
+18
+00:01:54,490 --> 00:01:57,720
+deployed as a single package: you can
+just start the client or just start the
+
+19
+00:01:57,720 --> 00:02:03,929
+server whatever components you need. But they're all available if you need them. This package is
+
+20
+00:02:03,929 --> 00:02:10,130
+large but it makes it very easy to
+deploy Sensu on platforms which may
+
+21
+00:02:10,130 --> 00:02:14,019
+not have an up-to-date version of Ruby.
+
+22
+00:02:14,019 --> 00:02:17,539
+Using the omnibus package you get to take advantage of this this consistent
+
+23
+00:02:17,610 --> 00:02:21,610
+version of Ruby that you can deploy on
+any distro and be confident it's gonna work
+
+24
+00:02:21,610 --> 00:02:29,610
+regardless of how old that distro is, or new? It's very convenient. The embedded
+
+25
+00:02:29,610 --> 00:02:33,730
+Ruby also gives you some additional
+benefits when deploying plugins and
+
+26
+00:02:33,730 --> 00:02:38,799
+writing your own "handlers". We'll talk about that in later lectures.
+
+27
+00:02:38,799 --> 00:02:43,769
+Let's take a look at the configuration
+files because as an engineer you spend a
+
+28
+00:02:43,769 --> 00:02:53,410
+lot of time configuring things. Sensu has a conf.d-style directory where you
+
+29
+00:02:53,410 --> 00:02:55,790
+can fill it up with files.
+
+30
+00:02:55,790 --> 00:02:57,470
+Let's take a look at this Readme...
+
+31
+00:03:00,920 --> 00:03:10,510
+All of Sensu's configuration files are JSON. JSON is a machine readable format.
+
+32
+00:03:10,510 --> 00:03:14,410
+It's not really designed for humans to be
+editing although you can read them as a
+
+33
+00:03:14,410 --> 00:03:21,050
+human and you can edit them as a human. It's best to use a program to deploy these like a
+
+34
+00:03:21,050 --> 00:03:25,370
+configuration management tool like Chef or Puppet. It's outside the scope of this
+
+35
+00:03:25,370 --> 00:03:30,500
+introductory class so we're gonna be
+kinda editing these files by hand, but
+
+36
+00:03:30,500 --> 00:03:34,830
+you need to know that they are JSON
+files so they are very vulnerable to
+
+37
+00:03:34,830 --> 00:03:40,650
+typos and trailing commas. Let's go
+back to the docs and see what we should
+
+38
+00:03:40,650 --> 00:03:41,610
+do next.
+
+39
+00:03:44,580 --> 00:03:48,760
+Let's get this kind-of "getting started"
+
+40
+00:03:48,769 --> 00:03:50,869
+configuration file...
+
+41
+00:03:54,440 --> 00:04:00,040
+You can see the docs recommend we deploy that in this config.json right here in /etc/sensu. Let's
+
+42
+00:04:00,049 --> 00:04:00,870
+look at it...
+
+43
+00:04:06,080 --> 00:04:10,380
+These options are required to let Sensu know where to discover all of these
+
+44
+00:04:10,400 --> 00:04:15,510
+requisite components: RabbitMQ and Redis that we setup before and of course that API. You can see they all
+
+45
+00:04:15,510 --> 00:04:19,950
+point to localhost. Which is fine. For this introduction class all of these
+
+46
+00:04:19,950 --> 00:04:24,610
+components are running on the same
+server. You can imagine later if you
+
+47
+00:04:24,610 --> 00:04:29,520
+scale out your components, you might put
+RabbitMQ, Redis, and the API on one set of
+
+48
+00:04:29,520 --> 00:04:32,900
+servers and then the clients will be
+different, but they'll need to point to
+
+49
+00:04:32,900 --> 00:04:36,700
+those RabbitMQ, Redis, and API servers.
+
+50
+00:04:41,529 --> 00:04:48,379
+Back in the official docs: the first thing they recommend is installing a check. So let's do that...
+
+51
+00:04:53,480 --> 00:05:00,320
+You can see that put that in 'conf.d'. In
+reality it doesn't really matter about
+
+52
+00:05:00,329 --> 00:05:03,409
+the directory structure in this folder
+because they always get merged together.
+
+53
+00:05:03,409 --> 00:05:07,389
+This makes it really easy for
+configuration management tools to add
+
+54
+00:05:07,389 --> 00:05:11,439
+components, configuration pieces one file
+at a time and get them all merged
+
+55
+00:05:11,439 --> 00:05:16,579
+together when Sensu reloads. But for humans it's kinda nice to have
+
+56
+00:05:16,579 --> 00:05:18,239
+one check per JSON.
+
+57
+00:05:24,120 --> 00:05:26,760
+Now the docs say that we've installed this configuration
+
+58
+00:05:26,769 --> 00:05:31,019
+for a check but we haven't actually installed this check yet. You can see the path we
+
+59
+00:05:31,019 --> 00:05:35,179
+haven't put this here yet, but we will soon.
+
+60
+00:05:39,840 --> 00:05:43,380
+Next the docs recommend we install some sort of "handler",  so let's do that.
+
+61
+00:05:44,280 --> 00:05:47,140
+If you remember from the architecture diagram "handlers"
+
+62
+00:05:47,140 --> 00:05:53,610
+are these scripts that Sensu uses to
+respond to events. This might be things like
+
+63
+00:05:53,610 --> 00:06:01,910
+interacting with the PagerDuty API, sending you an email.. This "handler" is very simple. It's
+
+64
+00:06:01,910 --> 00:06:05,530
+a pipe "handler" which means it takes
+standard in. The command we are running as "cat".
+
+65
+00:06:05,530 --> 00:06:11,940
+You can imagine, "cat" with this handler is
+not gonna do much except just spit out
+
+66
+00:06:11,940 --> 00:06:17,790
+whatever it got on the "standard in". We'll see how that actually works a bit later when we
+
+67
+00:06:17,790 --> 00:06:18,930
+look at the logs.
+
+68
+00:06:20,500 --> 00:06:24,680
+So we have our our "check_men", we have our "cat" handler.
+
+69
+00:06:25,380 --> 00:06:28,080
+Now we're going to go ahead and start the server components...
+
+70
+00:06:34,700 --> 00:06:37,660
+We've started the sensu-server and the sensu-api.
+
+71
+00:06:42,360 --> 00:06:45,180
+Let's go ahead and take a look at the log for the
+
+72
+00:06:45,190 --> 00:06:51,640
+sensu-server and sensu-api now that we've started them. The logs are were you might expect them
+
+73
+00:06:51,640 --> 00:07:00,080
+"/var/log/sensu". We have two logs since we've started those two things. Let's look at the api..
+
+74
+00:07:01,900 --> 00:07:08,500
+You may notice this is a little hard to read.  This is in JSON as well. This makes it a little harder for humans to
+
+75
+00:07:08,500 --> 00:07:13,240
+read but does make it easy for machines
+and log aggregators like Logstash to
+
+76
+00:07:13,240 --> 00:07:20,330
+consume. If you're working with a lot of JSON, I kind of recommend using this tool
+
+77
+00:07:20,330 --> 00:07:22,530
+called "jq".
+
+78
+00:07:27,320 --> 00:07:33,060
+jq is a tool to parse JSON and
+do fancy things with it.
+
+79
+00:07:33,060 --> 00:07:37,050
+The closest analogue I could think of is
+it's like "sed",  but instead of plaintext it works with
+
+80
+00:07:37,050 --> 00:07:44,140
+JSON. As you saw the sensu-api.log is just full of, it's just all JSON. You can pipe that
+
+81
+00:07:44,140 --> 00:07:51,760
+to jq and the "." command and just prints
+things. It makes it a little easier to read but no big deal.
+
+82
+00:07:51,760 --> 00:07:55,700
+We'll look at these logs later in more depth.
+
+83
+00:07:56,560 --> 00:07:59,800
+Let's take a look at the sensu-server log..
+
+84
+00:08:05,260 --> 00:08:10,860
+If you look carefully, you can see that it's already publishing check requests for that
+
+85
+00:08:10,870 --> 00:08:16,530
+memory check that we installed. Now we haven't setup any clients yet so nobody's
+
+86
+00:08:16,530 --> 00:08:21,010
+responding, but the Sensu server is
+scheduling these checks to be executed.
+
+87
+00:08:27,020 --> 00:08:32,979
+That's all for this lecture on the Sensu server components. We'll cover setting up
+
+88
+00:08:32,979 --> 00:08:34,729
+the Sensu client and the next lecture.
+

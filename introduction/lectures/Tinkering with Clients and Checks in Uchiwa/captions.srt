@@ -1,0 +1,707 @@
+1
+00:00:00,000 --> 00:00:02,480
+Welcome to Tinkering with Uchiwa.
+
+2
+00:00:03,340 --> 00:00:07,660
+If you're installing Sensu for the first time then this dashboard is going to be brand new to you,
+
+3
+00:00:07,660 --> 00:00:09,000
+so I want to show you around a bit.
+
+4
+00:00:10,000 --> 00:00:13,980
+As a reminder the Uchiwa dashboard is the open-source dashboard
+
+5
+00:00:14,300 --> 00:00:17,880
+there's also the enterprise dashboard but it operates very much the same way.
+
+6
+00:00:17,880 --> 00:00:21,600
+In fact the enterprise dashboard is based on Uchiwa at source code level.
+
+7
+00:00:23,620 --> 00:00:26,080
+Notice on this first landing page here,
+
+8
+00:00:27,400 --> 00:00:30,080
+is there anything in particular that you notice about it?
+
+9
+00:00:31,680 --> 00:00:34,300
+Maybe something that's not here?
+
+10
+00:00:35,540 --> 00:00:39,180
+It may surprise you, but a very common misunderstanding about Sensu is that
+
+11
+00:00:39,460 --> 00:00:41,680
+it is not a "green light" dashboard.
+
+12
+00:00:42,620 --> 00:00:43,680
+What that means is:
+
+13
+00:00:44,280 --> 00:00:49,000
+Sensu by default is not going to show you all of the hundreds or thousands or
+
+14
+00:00:49,300 --> 00:00:52,780
+millions of checks that are green in your infrastructure.
+
+15
+00:00:53,600 --> 00:00:57,220
+The reasons for this are somewhat technical and somewhat philosophical
+
+16
+00:00:58,120 --> 00:01:02,160
+but the core problem is that green light dashboards, in general, don't scale very well.
+
+17
+00:01:03,780 --> 00:01:07,740
+Sensu's event-driven architecture means that it only shows you the things that are red.
+
+18
+00:01:08,380 --> 00:01:09,660
+This is in general a good thing.
+
+19
+00:01:10,440 --> 00:01:14,100
+It is true that Sensu does record the event output of green
+
+20
+00:01:14,620 --> 00:01:18,080
+checks but by default it doesn't show up on the event page.
+
+21
+00:01:19,160 --> 00:01:21,880
+Let's talk a little bit more about this
+this landing page here.
+
+22
+00:01:21,880 --> 00:01:24,640
+We're on the Events section of Uchiwa.
+
+23
+00:01:25,720 --> 00:01:27,500
+Notice here, this "Source" column
+
+24
+00:01:27,660 --> 00:01:31,340
+You can sort it if you want to but it's "hostname".
+
+25
+00:01:32,300 --> 00:01:38,620
+This is because Sensu can actually accept events for hosts that don't even exist.
+
+26
+00:01:39,580 --> 00:01:41,880
+This is especially helpful for things like:
+
+27
+00:01:42,220 --> 00:01:47,540
+network gear, switches, PDUs, clusters or kinda like, meta-hosts.
+
+28
+00:01:48,420 --> 00:01:51,460
+Although it's an advanced topic, that's
+what this is for.
+
+29
+00:01:52,660 --> 00:01:55,840
+Now this next column, "Check", you see the actual check name.
+
+30
+00:01:58,480 --> 00:02:01,140
+Here would be the output of the check if I had one.
+
+31
+00:02:02,000 --> 00:02:05,540
+For this demonstration I just made these checks up, I didn't actually output
+
+32
+00:02:05,540 --> 00:02:07,500
+any output here so you don't see anything.
+
+33
+00:02:07,980 --> 00:02:12,660
+Here's where you might see something like:  "OK: 100 MB FREE" or something like that.
+
+34
+00:02:13,520 --> 00:02:15,760
+This column here is "Occurrences"
+
+35
+00:02:16,380 --> 00:02:21,880
+This is the number of times that this check has come back red or has been failing.
+
+36
+00:02:22,260 --> 00:02:25,319
+Sensu doesn't record the number of times that it's been "ok".
+
+37
+00:02:25,940 --> 00:02:30,320
+Again it's part of that green light dashboard thing; it only records failing checks like this.
+
+38
+00:02:31,080 --> 00:02:33,900
+All of these have a number "1" meaning
+
+39
+00:02:34,200 --> 00:02:37,500
+when I made them I just made them one so they haven't reoccurred.
+
+40
+00:02:37,500 --> 00:02:39,420
+So there's only been one occurrence of each of these checks.
+
+41
+00:02:41,000 --> 00:02:42,380
+This column here is "Datacenter".
+
+42
+00:02:42,380 --> 00:02:47,200
+Remember that Uchiwa is capable of showing your multiple data centers at the same time.
+
+43
+00:02:47,740 --> 00:02:50,660
+We just have one datacenter for our demonstration so it's just "localhost".
+
+44
+00:02:51,800 --> 00:02:53,420
+This column here is "Issued"
+
+45
+00:02:53,840 --> 00:02:56,120
+This is when the actual check came in.
+
+46
+00:02:57,320 --> 00:03:00,920
+As you can see they came in at different times when I executed them,
+
+47
+00:03:02,200 --> 00:03:05,940
+but it's helpful to be able to sort these to see what are the most recent, failing checks.
+
+48
+00:03:07,860 --> 00:03:09,800
+Let's click on an event and see more data.
+
+49
+00:03:11,440 --> 00:03:14,660
+You can see in this model we have  some more data about the host that made it
+
+50
+00:03:14,920 --> 00:03:15,960
+and the event output.
+
+51
+00:03:17,280 --> 00:03:20,500
+This speaker icon here is for silencing the host,
+
+52
+00:03:20,780 --> 00:03:23,640
+and this speaker icon here is for silencing the check itself.
+
+53
+00:03:25,240 --> 00:03:31,700
+Most Sensu handlers will also suppress the notifications for a check if the host is silenced.
+
+54
+00:03:33,660 --> 00:03:37,000
+One subtle thing here is that handlers do have to be silenced-aware.
+
+55
+00:03:37,840 --> 00:03:43,440
+When we did the very simple "cat" handler, if you remember from our basic installation,
+
+56
+00:03:43,760 --> 00:03:48,500
+the "cat" handler doesn't know anything about silences so it's going to continue to run cat continuously.
+
+57
+00:03:50,760 --> 00:03:52,840
+Take a look at this "X" here, this Delete.
+
+58
+00:03:53,220 --> 00:03:55,620
+What do you think it means to "Delete" a client?
+
+59
+00:03:57,140 --> 00:03:59,500
+I'll talk about it a bit more when we get to the client section
+
+60
+00:04:01,400 --> 00:04:02,500
+How about this checkmark?
+
+61
+00:04:02,860 --> 00:04:05,040
+"Resolve" What does it mean to resolve a check?
+
+62
+00:04:06,420 --> 00:04:09,440
+Well, in Sensu because it's all event-driven
+
+63
+00:04:10,220 --> 00:04:13,260
+you can actually resolve any check that comes in yourself.
+
+64
+00:04:13,420 --> 00:04:14,640
+In fact, I'll click it right now.
+
+65
+00:04:16,200 --> 00:04:17,440
+It's been resolved!
+
+66
+00:04:18,160 --> 00:04:22,840
+However, if the thing that emitted the event in the first place
+
+67
+00:04:22,840 --> 00:04:26,980
+for example Sensu Client or Cron job or
+something that was emitting this event
+
+68
+00:04:27,800 --> 00:04:31,460
+is still failing, you'll see this come back red.
+
+69
+00:04:31,460 --> 00:04:33,940
+once again, and it will re-notify you.
+
+70
+00:04:35,380 --> 00:04:42,200
+But sometimes it happens that events are
+one-time things or they can be spawned ephemerally,
+
+71
+00:04:42,660 --> 00:04:46,280
+and human or via API might need to manually resolve these.
+
+72
+00:04:46,900 --> 00:04:48,220
+Let's move on to clients.
+
+73
+00:04:49,460 --> 00:04:52,920
+Looks very similar to the "Event" page
+except it's more client-based.
+
+74
+00:04:54,080 --> 00:04:55,920
+We can see all the unique clients that I have set up.
+
+75
+00:04:55,920 --> 00:05:00,680
+Again some of these are fake and setup for demonstration purposes.
+
+76
+00:05:01,080 --> 00:05:03,220
+If you recognize "mycoolhost" is what I called
+
+77
+00:05:03,220 --> 00:05:05,680
+the original host that we setup so this one's actually real.
+
+78
+00:05:07,240 --> 00:05:08,940
+Let's check out "mycoolhost"
+
+79
+00:05:11,420 --> 00:05:14,840
+You can silence a host by clicking this volume icon again
+
+80
+00:05:15,320 --> 00:05:17,540
+It'll ask you for how long you want it to be silenced,
+
+81
+00:05:17,540 --> 00:05:22,260
+Let's say 24 hours and say: "Doing A Demo"
+
+82
+00:05:27,000 --> 00:05:30,940
+We'll talk about "stashes" in a bit. You can see this has changed to a muted icon.
+
+83
+00:05:33,080 --> 00:05:37,060
+Again, depending on the handler and most handlers will do this,
+
+84
+00:05:37,480 --> 00:05:42,360
+they'll suppress the alerts for these as well since the host has been silenced.
+
+85
+00:05:43,960 --> 00:05:46,240
+Remember this "Delete" button here?
+
+86
+00:05:48,380 --> 00:05:49,280
+Let's go ahead and click it.
+
+87
+00:05:51,560 --> 00:05:52,620
+The client has been deleted.
+
+88
+00:05:53,860 --> 00:05:55,540
+But wait!  It's still here.
+
+89
+00:05:58,620 --> 00:05:59,600
+Oh wait it's gone.
+
+90
+00:06:02,260 --> 00:06:03,140
+And now it's back.
+
+91
+00:06:04,220 --> 00:06:10,020
+What happened was, it took a second or two for the host to actually disappear from the dashboard
+
+92
+00:06:11,200 --> 00:06:17,300
+then a second or two later "mycoolhost" reregistered itself with Sensu.
+
+93
+00:06:19,020 --> 00:06:20,900
+The act of deleting a client,
+
+94
+00:06:22,080 --> 00:06:24,860
+while it did delete the client for a few moments,
+
+95
+00:06:25,400 --> 00:06:29,680
+the client is very much still alive and still
+emitting event data
+
+96
+00:06:30,980 --> 00:06:33,480
+and it's registering itself in Sensu continuously.
+
+97
+00:06:35,860 --> 00:06:39,660
+Hopefully this is getting the gears in your imagination turning for
+
+98
+00:06:39,660 --> 00:06:41,920
+how useful this would be in a dynamic environment.
+
+99
+00:06:43,020 --> 00:06:45,060
+Remember all of this is happening through the API
+
+100
+00:06:45,800 --> 00:06:48,400
+or there are also good command line
+tools.
+
+101
+00:06:48,840 --> 00:06:51,420
+So just think about what you could build with a system where
+
+102
+00:06:52,180 --> 00:06:54,800
+you don't have to tell it what hosts exist or don't exist;
+
+103
+00:06:55,480 --> 00:06:58,320
+they can come and go and register
+themselves
+
+104
+00:06:59,940 --> 00:07:03,740
+But you saw that me deleting the client didn't actually make it go away permanently.
+
+105
+00:07:04,960 --> 00:07:08,140
+Remember that metaphor that I mentioned before about the map and the territory?
+
+106
+00:07:09,240 --> 00:07:13,520
+Sensu is always in a continuous state of making the map
+
+107
+00:07:15,300 --> 00:07:18,780
+more accurate to what's actually out there in the territory.
+
+108
+00:07:20,580 --> 00:07:21,800
+If that makes any sense.
+
+109
+00:07:24,520 --> 00:07:25,860
+Let's take a look at checks.
+
+110
+00:07:28,720 --> 00:07:34,680
+The checks in this check modal only show server-side checks.
+
+111
+00:07:35,560 --> 00:07:40,920
+The Sensu API can't really be aware of
+the stand-alone checks that are
+
+112
+00:07:41,180 --> 00:07:43,240
+only defined on the clients.
+
+113
+00:07:44,020 --> 00:07:47,740
+This is a little bit confusing to newcomers because it looks like
+
+114
+00:07:48,060 --> 00:07:50,020
+only a subset of their checks are defined.
+
+115
+00:07:50,600 --> 00:07:53,220
+That's because you're only seeing the checks on the server.
+
+116
+00:07:54,220 --> 00:07:57,900
+There may be hundreds and thousands of
+checks that are defined
+
+117
+00:07:58,280 --> 00:08:02,740
+in unique ways on each client. And their all responsible for executing those checks
+
+118
+00:08:03,000 --> 00:08:08,580
+and submitting the results, but the Sensu server doesn't know about them so they don't show up in this modal.
+
+119
+00:08:10,960 --> 00:08:13,240
+This screen is actually read-only there's
+
+120
+00:08:13,240 --> 00:08:16,080
+nothing you can actually do with these checks; it's just informational.
+
+121
+00:08:18,060 --> 00:08:20,160
+Let's look at the next section: "Stashes"
+
+122
+00:08:22,520 --> 00:08:26,540
+Stashes are Sensu's freeform key value store.
+
+123
+00:08:27,160 --> 00:08:32,580
+The Sensu handlers can use the stashes however they need to.
+
+124
+00:08:33,540 --> 00:08:39,720
+For example, we made a stash a few seconds ago by silencing this host.
+
+125
+00:08:41,560 --> 00:08:46,520
+Our Sensu handlers can pick up
+on the fact that this stash exists
+
+126
+00:08:47,220 --> 00:08:53,160
+and then choose not to emit any emails or not talk to the PagerDuty API
+
+127
+00:08:54,000 --> 00:08:56,100
+depending on whether this stash exists.
+
+128
+00:08:58,960 --> 00:09:02,340
+But stashes are just key/values; you can use them for anything,
+
+129
+00:09:03,040 --> 00:09:04,940
+but silencing is the most popular way to use them.
+
+130
+00:09:06,020 --> 00:09:07,440
+Remember there's just an API for this.
+
+131
+00:09:07,720 --> 00:09:12,680
+So what if you imagined that you had a provisioning system that launches new hosts?
+
+132
+00:09:13,500 --> 00:09:16,920
+And then you want them to be silenced for a few hours just because they just came up.
+
+133
+00:09:17,920 --> 00:09:22,980
+Can you imagine making that API call or using a CLI tool with such a provisioning system?
+
+134
+00:09:24,240 --> 00:09:28,340
+In the "Reason" field you might say something like say something like "Silencing because it just came up"
+
+135
+00:09:29,540 --> 00:09:32,820
+And the "Source" might be your provisioning tool.
+
+136
+00:09:34,500 --> 00:09:35,280
+Could be pretty cool.
+
+137
+00:09:37,740 --> 00:09:40,680
+The "aggregate" section is an advanced topic.
+
+138
+00:09:42,120 --> 00:09:44,880
+I'm not going to talk about aggregates much in this introductory course;
+
+139
+00:09:45,420 --> 00:09:49,940
+they have to do with executing one
+particular check over the course of many hosts
+
+140
+00:09:49,940 --> 00:09:54,640
+and then doing a tally or an aggregation of those results and acting on it.
+
+141
+00:09:55,640 --> 00:09:57,040
+This would be useful for something like
+
+142
+00:09:57,440 --> 00:10:00,660
+checking http over the course of a large fleet of web servers.
+
+143
+00:10:01,820 --> 00:10:03,560
+Again, it's more of an advanced topic but,
+
+144
+00:10:03,980 --> 00:10:06,100
+we can talk about it in more advanced courses.
+
+145
+00:10:08,520 --> 00:10:09,860
+The "Datacenter" screen
+
+146
+00:10:11,760 --> 00:10:15,100
+Here would be the list of data centers that you defined in Uchiwa
+
+147
+00:10:15,400 --> 00:10:17,660
+and all of them and they're connected states.
+
+148
+00:10:18,480 --> 00:10:21,240
+You can see we only have one datacenter, just our localhost,
+
+149
+00:10:21,560 --> 00:10:22,440
+but it is connected.
+
+150
+00:10:23,640 --> 00:10:25,220
+It has some events,
+
+151
+00:10:25,400 --> 00:10:26,460
+has a few clients,
+
+152
+00:10:26,980 --> 00:10:27,540
+one check,
+
+153
+00:10:28,020 --> 00:10:28,800
+and some stashes.
+
+154
+00:10:33,260 --> 00:10:34,760
+That's about it for the dashboard.
+
+155
+00:10:35,220 --> 00:10:39,140
+Uchiwa is a modern dashboard, very responsive and it gets the job done.
+
+156
+00:10:40,340 --> 00:10:41,960
+This is just an introductory course,
+
+157
+00:10:41,960 --> 00:10:44,980
+but if you imagine there's a lot more that you could be doing.
+
+158
+00:10:45,760 --> 00:10:49,980
+Uchiwa actually will automatically embed
+links and images
+
+159
+00:10:50,140 --> 00:10:55,740
+to give you a really rich experience if you want to embed graphs from an external data source.
+
+160
+00:10:56,620 --> 00:10:58,160
+And of course, don't forget the API.
+
+161
+00:10:58,700 --> 00:11:04,360
+The dashboard is just a convenient way for humans  to interact with the API using a web browser
+
+162
+00:11:06,640 --> 00:11:09,460
+To give you know another example of how to use the API,
+
+163
+00:11:09,460 --> 00:11:16,120
+take a look at this script I have on GitHub to spit out the status and events for a particular host.
+
+164
+00:11:17,120 --> 00:11:20,540
+You can see the first time I ran this it had all those checks that were failing.
+
+165
+00:11:21,300 --> 00:11:23,140
+Then when we deleted the host
+we cleared it out
+
+166
+00:11:24,060 --> 00:11:27,800
+and now its silenced, everything is green.
+
+167
+00:11:29,060 --> 00:11:32,460
+This is interacting with the same API that Uchiwa is interacting with,
+
+168
+00:11:33,020 --> 00:11:37,260
+but you can see the possibilities are opened up because it's machine readable
+
+169
+00:11:37,260 --> 00:11:39,420
+and we can use it for many more interesting things.
+
+170
+00:11:40,120 --> 00:11:42,420
+Can you imagine putting this in the 
+message of the day
+
+171
+00:11:42,420 --> 00:11:46,020
+so when you log in to your server you see right away if there any failing checks for it?
+
+172
+00:11:47,120 --> 00:11:48,180
+Also could be pretty cool.
+
+173
+00:11:49,920 --> 00:11:56,040
+But, for now that's Uchiwa: the open-source Sensu dashboard and how it works.
+
