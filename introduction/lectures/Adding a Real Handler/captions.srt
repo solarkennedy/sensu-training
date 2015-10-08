@@ -1,0 +1,1110 @@
+1
+00:00:00,000 --> 00:00:04,480
+So far in these lectures we've been
+mostly following the official documentation on
+
+2
+00:00:04,860 --> 00:00:06,300
+installing and configuring Sensu,
+
+3
+00:00:07,100 --> 00:00:07,760
+which is cool.
+
+4
+00:00:08,290 --> 00:00:11,140
+But let's see if we can go a little bit
+beyond the docs
+
+5
+00:00:11,140 --> 00:00:14,240
+and try to get our Sensu installation to do something a little more useful.
+
+6
+00:00:15,220 --> 00:00:17,560
+In particular, let's try to make it send us an email.
+
+7
+00:00:18,940 --> 00:00:23,400
+If you remember from the architecture lecture the job of the Sensu server component
+
+8
+00:00:23,700 --> 00:00:26,480
+is to respond to events and act on them.
+
+9
+00:00:27,760 --> 00:00:30,740
+These actions are in the form of
+handlers.
+
+10
+00:00:31,640 --> 00:00:36,220
+In Sensu, a handler is a script that does something based on the event data
+
+11
+00:00:36,500 --> 00:00:37,960
+that comes from standard in.
+
+12
+00:00:38,740 --> 00:00:41,440
+This makes them pretty easy to write, test
+and understand.
+
+13
+00:00:42,440 --> 00:00:45,620
+Remember our "cat" handler from our original installation?
+
+14
+00:00:46,160 --> 00:00:48,000
+Let's take a look at it's configuration.
+
+15
+00:00:56,890 --> 00:01:03,190
+The cat handler takes data from standard in but just echoes it right back out.
+
+16
+00:01:03,960 --> 00:01:07,660
+This isn't a very interesting handler but it does demonstrate what
+
+17
+00:01:08,180 --> 00:01:11,140
+handlers are supposed to do.
+
+18
+00:01:11,300 --> 00:01:13,600
+If we're going to do something more useful than just cat
+
+19
+00:01:13,840 --> 00:01:17,040
+we need to find a handler to do that useful thing.
+
+20
+00:01:18,000 --> 00:01:19,620
+In this case, email.
+
+21
+00:01:20,500 --> 00:01:24,280
+Now where would we go to find a Sensu email handler?
+
+22
+00:01:24,680 --> 00:01:25,960
+We could certainly write our own,
+
+23
+00:01:26,460 --> 00:01:26,960
+but
+
+24
+00:01:27,660 --> 00:01:32,060
+luckily on the internet, there's a collection of community Sensu plug-ins for you to use
+
+25
+00:01:32,640 --> 00:01:38,040
+here at the Sensu-plugins-github project and there are many many to choose from.
+
+26
+00:01:38,660 --> 00:01:41,240
+You do not have to reinvent the wheel when it comes to this
+
+27
+00:01:42,320 --> 00:01:44,880
+Let's type in "mail" and see what comes up.
+
+28
+00:01:46,740 --> 00:01:47,380
+We've got:
+
+29
+00:01:47,700 --> 00:01:49,040
+sensu-plugins-mailer
+
+30
+00:01:49,160 --> 00:01:50,080
+Sounds legit.
+
+31
+00:01:50,840 --> 00:01:55,360
+sensu-plugins-qmail is probably for checking qmail not for sending email.
+
+32
+00:01:56,460 --> 00:01:59,120
+sensu-plugins-ponymailer happens to be this
+
+33
+00:01:59,120 --> 00:02:02,360
+more advanced email handler that uses the "pony" rubygem.
+
+34
+00:02:02,980 --> 00:02:05,000
+This (sensu-plugins-mailer) is probably fine for us.
+
+35
+00:02:06,840 --> 00:02:08,380
+The sensu-plugins-mailer
+
+36
+00:02:09,960 --> 00:02:13,020
+you can see what it provides; a few different variations on the mailer,
+
+37
+00:02:14,020 --> 00:02:16,020
+gives you some example configuration,
+
+38
+00:02:16,920 --> 00:02:18,780
+links for install and setup.
+
+39
+00:02:20,540 --> 00:02:21,880
+This is probably what we want.
+
+40
+00:02:23,740 --> 00:02:28,340
+The first thing you should notice is that this thing is a Rubygem.
+
+41
+00:02:29,800 --> 00:02:33,940
+If you're already familiar with Rubygems, you probably feel right at home and already know what to do,
+
+42
+00:02:34,720 --> 00:02:37,180
+but not everybody is though and this is introductory course,
+
+43
+00:02:37,820 --> 00:02:40,240
+so let's figure out how we're gonna install this Rubygem.
+
+44
+00:02:40,860 --> 00:02:44,300
+Certainly you could do what it suggests right away which is just "gem install".
+
+45
+00:02:45,940 --> 00:02:49,160
+But, remember earlier when I talked about how Sensu
+
+46
+00:02:49,160 --> 00:02:52,060
+is packaged via an omnibus package?
+
+47
+00:02:52,620 --> 00:02:55,000
+Meaning that it comes with its own Ruby interpreter.
+
+48
+00:02:55,860 --> 00:02:59,540
+This is pretty convenient for us because it means that we don't have to install
+
+49
+00:02:59,540 --> 00:03:01,260
+yet another ruby on the system.
+
+50
+00:03:01,600 --> 00:03:04,960
+And who knows what version of Ruby it's going to be installing on the system-ruby?
+
+51
+00:03:05,440 --> 00:03:07,760
+If we can re-use Sensu's Ruby, let's do that.
+
+52
+00:03:07,760 --> 00:03:11,160
+It will give us a consistent version of Ruby across all platforms.
+
+53
+00:03:11,160 --> 00:03:13,500
+It's guaranteed to be there
+already.
+
+54
+00:03:14,280 --> 00:03:15,900
+Seems to make sense to use this already.
+
+55
+00:03:17,420 --> 00:03:23,680
+But let's refresh our memory
+about where Sensu puts its omnibus Ruby.
+
+56
+00:03:24,480 --> 00:03:30,300
+It's in /opt/sensu/embedded/bin/ and then this bin folder has the binaries
+
+57
+00:03:30,660 --> 00:03:36,700
+including the ruby interpreter and the gem command.
+
+58
+00:03:38,900 --> 00:03:42,800
+Well, let's use these to install our script.
+
+59
+00:03:45,460 --> 00:03:48,000
+Instead of running "gem install"
+
+60
+00:03:48,760 --> 00:03:51,420
+and this documentation here is just generic
+documentation
+
+61
+00:03:51,420 --> 00:03:53,340
+so they just have sensu-plugins-disks.
+
+62
+00:03:54,260 --> 00:03:58,600
+Let's go back to our plugin here
+sensu-plugin-mailer
+
+63
+00:03:59,740 --> 00:04:01,900
+Instead of running just "gem install"
+
+64
+00:04:02,280 --> 00:04:03,060
+We'll run
+
+65
+00:04:04,340 --> 00:04:12,240
+this gem install which is   "/opt/sensu/embedded/bin/gem install"
+
+66
+00:04:13,080 --> 00:04:15,520
+And then the name of the gem which is
+
+67
+00:04:15,520 --> 00:04:17,680
+"sensu-plugins-mailer"
+
+68
+00:04:22,260 --> 00:04:23,100
+Didn't work!
+
+69
+00:04:23,620 --> 00:04:26,640
+Didn't work because of FilePermissionError that's because the
+
+70
+00:04:26,640 --> 00:04:30,080
+omnibus package is a system package so everything is owned by root.
+
+71
+00:04:31,240 --> 00:04:33,180
+So you do have to run this with sudo
+
+72
+00:04:35,020 --> 00:04:38,340
+You have to run this in sudo because you need these to be installed as root
+
+73
+00:04:39,120 --> 00:04:41,560
+Ok. Still didn't work. let's work through it.
+
+74
+00:04:43,120 --> 00:04:46,280
+I couldn't find g++.
+
+75
+00:04:47,280 --> 00:04:50,520
+I happen to know that in order to build many things
+
+76
+00:04:50,520 --> 00:04:53,600
+on an Ubuntu system you need the build-essential package.
+
+77
+00:04:53,600 --> 00:04:54,640
+So let's just install that.
+
+78
+00:05:00,960 --> 00:05:04,060
+Ok. Now we can re-run that command
+
+79
+00:05:05,700 --> 00:05:06,560
+It finished.
+
+80
+00:05:07,480 --> 00:05:09,240
+But, where did it put it?
+
+81
+00:05:10,360 --> 00:05:13,780
+Instead of install you can use "gem contents"
+
+82
+00:05:15,200 --> 00:05:18,660
+to see the contents of a gem
+and where they are installed on the file system.
+
+83
+00:05:19,020 --> 00:05:20,380
+You can see that they're in
+
+84
+00:05:20,380 --> 00:05:22,880
+/opt/sensu/embedded/lib/
+
+85
+00:05:23,240 --> 00:05:27,580
+But this would be the normal location where rubygems would be installed but they're in this special
+
+86
+00:05:27,700 --> 00:05:31,340
+omnibus gem install location place.
+
+87
+00:05:31,820 --> 00:05:39,520
+But when you install a gem the binaries end up in the bin folder of the ruby home.
+
+88
+00:05:40,580 --> 00:05:44,160
+That is in the same place we were before.
+
+89
+00:05:44,160 --> 00:05:48,160
+"ls /opt/sensu/embedded/bin"
+
+90
+00:05:48,660 --> 00:05:50,700
+and now you'll see some new scripts.
+
+91
+00:05:51,090 --> 00:05:52,050
+Let me filter them out.
+
+92
+00:05:54,160 --> 00:05:57,440
+you can see that the "gem install" installed these scripts for us to use
+
+93
+00:05:57,780 --> 00:06:04,000
+and they're just wrappers to actually execute the binary code in the gem itself.
+
+94
+00:06:04,180 --> 00:06:05,700
+So we're interested in this one (handler.mailer.rb)
+
+95
+00:06:08,540 --> 00:06:12,420
+Let's also, while we're in here, take a look at the file itself.
+
+96
+00:06:20,140 --> 00:06:23,620
+This is a very typical binstub of a gem install.
+
+97
+00:06:23,860 --> 00:06:26,420
+The important thing I want to point out is
+this up here,
+
+98
+00:06:26,940 --> 00:06:29,160
+you can see that the shebang of this script
+
+99
+00:06:29,160 --> 00:06:33,900
+already references the embedded omnibus sensu ruby.
+
+100
+00:06:34,460 --> 00:06:40,140
+So if we just call this script directly it will
+automatically use the embedded
+
+101
+00:06:40,640 --> 00:06:44,320
+Ruby that Sensu comes with, which is
+excellent because that's exactly what we wanted.
+
+102
+00:06:44,680 --> 00:06:46,740
+It has no dependence on the sysem Ruby.
+
+103
+00:06:47,860 --> 00:06:49,480
+You would not want to run this with
+
+104
+00:06:50,680 --> 00:06:54,980
+the Ruby command in front, cause then you're not controlling which Ruby it's using.
+
+105
+00:06:55,900 --> 00:07:00,740
+By letting it use the shebang it's going to use the omnibus Ruby as intended.
+
+106
+00:07:02,000 --> 00:07:04,720
+Well, does it work? Let's try running it.
+
+107
+00:07:06,820 --> 00:07:08,140
+What do you think is happening?
+
+108
+00:07:09,140 --> 00:07:10,360
+No news, is good news?
+
+109
+00:07:10,800 --> 00:07:12,480
+Well, watch when I press Ctrl+D
+
+110
+00:07:14,580 --> 00:07:17,420
+You can see it was expecting some sort of JSON text.
+
+111
+00:07:18,560 --> 00:07:23,760
+Again, handlers operate on event data coming in from standard in.
+
+112
+00:07:23,920 --> 00:07:27,440
+So while we ran it, it was just waiting for the event data to appear .
+
+113
+00:07:28,260 --> 00:07:31,920
+It's not really going to do much here but if you have some event data that you could just
+
+114
+00:07:31,920 --> 00:07:35,360
+pipe to it, you could just kind of simulate it and test it.
+
+115
+00:07:36,060 --> 00:07:36,560
+That's ok.
+
+116
+00:07:36,560 --> 00:07:39,160
+It does seem to work. It runs, but
+
+117
+00:07:39,620 --> 00:07:42,860
+we'll need to do a more comprehensive test to see if it will actually email us.
+
+118
+00:07:45,140 --> 00:07:46,680
+So. let's configure it.
+
+119
+00:07:50,800 --> 00:07:53,440
+We already have this default_handler.json".
+
+120
+00:07:56,280 --> 00:07:59,000
+Remember, this is the cat command that we used before.
+
+121
+00:07:59,780 --> 00:08:02,240
+Well, instead of cat, let's run our handler.
+
+122
+00:08:04,480 --> 00:08:05,380
+Seems simple enough,
+
+123
+00:08:05,680 --> 00:08:09,320
+but the documentation did reference some configuration that we'd need:
+
+124
+00:08:11,800 --> 00:08:15,500
+Here are the docs for handler-mailer-mailgun.  That's not what we're using.
+
+125
+00:08:15,760 --> 00:08:17,180
+handler-mailer-ses is not what we're using.
+
+126
+00:08:17,860 --> 00:08:20,520
+handler-mailer is what we're using so we'll need this.
+
+127
+00:08:22,340 --> 00:08:26,260
+But, these docs aren't really saying where we should put it.
+
+128
+00:08:27,340 --> 00:08:30,220
+We can put this in this mailer.json file.
+
+129
+00:08:30,960 --> 00:08:35,320
+But remember that Sensu's configuration is all merged into one big
+
+130
+00:08:35,680 --> 00:08:40,840
+configuration dictionary based on files on disk in the "conf.d" folder.
+
+131
+00:08:41,520 --> 00:08:46,700
+So we can just take this example configuration language
+
+132
+00:08:47,140 --> 00:08:51,520
+and put it right here in the same file and Sensu doesn't really care,
+
+133
+00:08:51,640 --> 00:08:54,820
+but it's nice for us humans to see the configuration for a handler
+
+134
+00:08:55,220 --> 00:08:59,160
+live right next to the definition of a handler.
+
+135
+00:09:00,920 --> 00:09:06,660
+Now, you have to be really careful here because this is JSON and it's pretty easy for humans to mix-up.
+
+136
+00:09:07,740 --> 00:09:09,560
+But this is totally fine.
+
+137
+00:09:10,100 --> 00:09:14,580
+Again Sensu doesn't care how you organize your JSON files
+
+138
+00:09:15,260 --> 00:09:16,860
+because it globs them all together.
+
+139
+00:09:17,300 --> 00:09:19,160
+Let's adjust this configuration to meet our needs.
+
+140
+00:09:19,320 --> 00:09:24,780
+The admin GUI is just the link that the email will contain to point you to the
+
+141
+00:09:25,340 --> 00:09:32,180
+web interface of your choice.  We're using Uchiwa and for us that's http://localhost:3000
+
+142
+00:09:32,940 --> 00:09:36,340
+Obviously, in a production environment
+you'd set your admin GUI to something different.
+
+143
+00:09:37,740 --> 00:09:41,360
+Let's make the mail appear to be from "sensu@localhost"
+
+144
+00:09:43,320 --> 00:09:46,940
+Let's email just "root@localhost"
+
+145
+00:09:49,040 --> 00:09:52,060
+We don't have a set SMTP server, just use localhost.
+
+146
+00:09:53,280 --> 00:09:56,880
+And again the domain "localhost" for our testing.
+
+147
+00:09:57,180 --> 00:10:01,100
+Obviously in a real environment you'd have your own SMTP configuration you'd want to use.
+
+148
+00:10:02,060 --> 00:10:02,860
+Let's save it.
+
+149
+00:10:05,320 --> 00:10:05,980
+Well, now what?
+
+150
+00:10:06,700 --> 00:10:11,320
+We've edited some configuration, now we
+need to restart Sensu to get it to pickup on it.
+
+151
+00:10:11,720 --> 00:10:13,840
+But which component do we need to restart?
+
+152
+00:10:14,240 --> 00:10:17,720
+We're not using a configuration management tool so we're going to have to figure this out by hand.
+
+153
+00:10:18,300 --> 00:10:23,300
+But, if you remember the architecture, handlers are executed by the Sensu server,
+
+154
+00:10:23,300 --> 00:10:28,460
+so the only component that picks up on this particular kind of configuration is the Sensu server.
+
+155
+00:10:29,440 --> 00:10:31,580
+Let's restart the Sensu server and see what happens.
+
+156
+00:10:35,600 --> 00:10:36,900
+Let's watch the logs
+
+157
+00:10:41,000 --> 00:10:42,300
+Nothing really interesting.
+
+158
+00:10:44,740 --> 00:10:45,560
+Is it working?
+
+159
+00:10:46,680 --> 00:10:48,960
+Try to think back about the Uchiwa lecture
+
+160
+00:10:49,520 --> 00:10:50,440
+and think to yourself
+
+161
+00:10:51,160 --> 00:10:55,720
+"why am I not seen any email or any log lines pertaining about emails?"
+
+162
+00:10:56,400 --> 00:10:58,860
+Of course, Sensu's not a greenlight dashboard.
+
+163
+00:10:59,260 --> 00:11:06,120
+So there isn't anything failing and because there's no failing events, no handlers are going to be executed.
+
+164
+00:11:09,280 --> 00:11:12,000
+Well, let's make it interesting;
+
+165
+00:11:12,000 --> 00:11:13,500
+let's make the check fail,
+
+166
+00:11:14,580 --> 00:11:18,260
+that way we'll get a handler to be
+executed and hopefully get some email.
+
+167
+00:11:20,760 --> 00:11:23,860
+Our only check in this example is the
+check-mem.sh thing.
+
+168
+00:11:26,660 --> 00:11:28,760
+Let's make this one fail all the time
+
+169
+00:11:30,740 --> 00:11:33,280
+by making it just "exit 2"
+
+170
+00:11:34,020 --> 00:11:37,740
+Remember that Sensu uses the same protocol as Nagios
+
+171
+00:11:38,020 --> 00:11:41,680
+and "exit 2" indicates a critical failure
+
+172
+00:11:43,280 --> 00:11:46,180
+Now, which do we restart in this situation?
+
+173
+00:11:46,860 --> 00:11:52,480
+This is a subscription check so it goes out to all the subscribers subscribing to test.
+
+174
+00:11:52,900 --> 00:11:56,000
+So it seems like we would restart the Sensu server and you'd be right.
+
+175
+00:11:56,000 --> 00:11:58,700
+We do have to
+restart the Sensu server in this case.
+
+176
+00:12:05,920 --> 00:12:09,600
+Let's watch the Sensu client's log and see how it reacts.
+
+177
+00:12:18,020 --> 00:12:22,100
+The Sensu Client is receiving check requests with a command of "exit 2"
+
+178
+00:12:22,100 --> 00:12:22,720
+That's good.
+
+179
+00:12:23,440 --> 00:12:27,540
+But look really carefully, the Sensu Client is
+publishing a check result
+
+180
+00:12:28,620 --> 00:12:32,180
+but it's still executing our old check-mem
+
+181
+00:12:33,800 --> 00:12:35,480
+This behavior is surprising.
+
+182
+00:12:36,080 --> 00:12:42,020
+It's an artifact of the fact that we have the Sensu client and the Sensu server co-located on the same host.
+
+183
+00:12:43,260 --> 00:12:46,860
+If a Sensu client sees a check definition in its configuration
+
+184
+00:12:46,860 --> 00:12:51,980
+it will assume that the check definition contains specific overrides
+
+185
+00:12:52,240 --> 00:12:56,780
+that are designed to take precedence over the generic check-mem that comes from the server.
+
+186
+00:12:57,500 --> 00:12:59,640
+For example, if you imagine if you have a fleet of servers
+
+187
+00:12:59,640 --> 00:13:03,660
+with a lot of different memory capabilities and you have a special server that has a lot of RAM,
+
+188
+00:13:03,670 --> 00:13:05,750
+you might set a different threshold on
+that
+
+189
+00:13:05,800 --> 00:13:09,480
+and set up a specific check-mem configuration on that client
+
+190
+00:13:09,840 --> 00:13:13,040
+to take precedence over what the server's asking you to run.
+
+191
+00:13:14,040 --> 00:13:18,540
+This can be a little confusing in this case because the Sensu client is on the same server.
+
+192
+00:13:18,880 --> 00:13:21,640
+So in this case we do have to restart the Sensu client
+
+193
+00:13:22,140 --> 00:13:26,260
+to get it to reload that configuration
+file that we edited.
+
+194
+00:13:30,800 --> 00:13:34,500
+On other Sensu clients that don't have this configuration file on disk
+
+195
+00:13:34,500 --> 00:13:36,120
+they would not have to be reloaded.
+
+196
+00:13:37,160 --> 00:13:38,580
+Let's take a look at the logs.
+
+197
+00:13:42,920 --> 00:13:48,140
+Ok. Now it's receiving the check with a
+command  of "exit 2"
+
+198
+00:13:49,240 --> 00:13:50,400
+and its publishing
+
+199
+00:13:53,000 --> 00:13:54,400
+an output of exit 2
+
+200
+00:13:54,600 --> 00:13:57,940
+You can see that it's return code is actually 2.
+
+201
+00:13:58,680 --> 00:14:01,020
+And the command I ran was "exit 2" so now it's working.
+
+202
+00:14:02,640 --> 00:14:05,500
+Well, is the Sensu server emailing us?
+
+203
+00:14:09,660 --> 00:14:11,540
+Let's look at these logs really carefully.
+
+204
+00:14:12,180 --> 00:14:15,100
+The Sensu server is publishing a check request for memory
+
+205
+00:14:15,740 --> 00:14:16,700
+with a command of "exit 2"
+
+206
+00:14:17,660 --> 00:14:21,540
+We saw just a second ago that the Sensu client is responding to that check request.
+
+207
+00:14:23,320 --> 00:14:25,800
+Here the Sensu server is processing an event.
+
+208
+00:14:27,980 --> 00:14:28,820
+Here's the check.
+
+209
+00:14:30,600 --> 00:14:31,700
+So it is processing it
+
+210
+00:14:32,160 --> 00:14:34,580
+and now we have the handler output.
+
+211
+00:14:35,800 --> 00:14:40,100
+Our handler and here's the command "handler-mailer" so that's good
+
+212
+00:14:40,820 --> 00:14:44,720
+output: "only handling every 180 occurances"
+
+213
+00:14:46,080 --> 00:14:47,180
+So it is getting the event
+
+214
+00:14:47,760 --> 00:14:51,540
+but by default this handler is only executing something
+
+215
+00:14:52,100 --> 00:14:54,240
+every 180 occurrences.
+
+216
+00:14:55,160 --> 00:14:58,340
+Occurrences is how many times this check has failed.
+
+217
+00:14:59,640 --> 00:15:03,400
+It's a filtering mechanism to make sure you don't get an email every 30 seconds.
+
+218
+00:15:05,060 --> 00:15:06,460
+How many occurrences have we had?
+
+219
+00:15:06,760 --> 00:15:08,420
+Well it says it right there in the event data.
+
+220
+00:15:09,040 --> 00:15:12,300
+It's happened five times; this check has been failing five times in a row
+
+221
+00:15:13,020 --> 00:15:16,580
+and this handler only operates every 180 occurrences.
+
+222
+00:15:17,180 --> 00:15:20,100
+So we might have to wait a while before we actually get an email out
+
+223
+00:15:20,580 --> 00:15:24,540
+Presumably it tries to do something on the first occurrences, the first occurrence.
+
+224
+00:15:26,740 --> 00:15:30,360
+well there's lots of things you can do to fine tune this filter
+
+225
+00:15:31,100 --> 00:15:34,720
+but I'm know a way that we can make this happen right now.
+
+226
+00:15:35,160 --> 00:15:36,240
+We can use each Uchiwa.
+
+227
+00:15:42,480 --> 00:15:43,760
+Here's that memory check.
+
+228
+00:15:50,790 --> 00:15:53,170
+I can manually resolve this check right now.
+
+229
+00:15:54,960 --> 00:15:59,020
+A manual resolve will make it go
+away for just a second
+
+230
+00:15:59,280 --> 00:16:02,040
+but our Sensu Client is still running the "exit 2"
+
+231
+00:16:03,200 --> 00:16:05,740
+and it's come back now.
+
+232
+00:16:06,600 --> 00:16:09,420
+But it did reset the occurrences back to 0.
+
+233
+00:16:09,900 --> 00:16:12,120
+So our handler probably did something.
+
+234
+00:16:16,780 --> 00:16:20,360
+It's a little messy to read because it's in JSON format but look carefully.
+
+235
+00:16:20,920 --> 00:16:26,020
+The handler did do something and its output is unfortunately stack trace.
+
+236
+00:16:26,720 --> 00:16:29,500
+But look at this "Connection refused"
+
+237
+00:16:33,200 --> 00:16:34,300
+Pretty hard to read,
+
+238
+00:16:34,680 --> 00:16:38,460
+but the reason it's happening is because it could not connect to
+
+239
+00:16:38,460 --> 00:16:42,260
+the mail server that I asked it to
+connect to which was localhost:25
+
+240
+00:16:43,060 --> 00:16:45,240
+That's because this is a vagrant box and it doesn't come with
+
+241
+00:16:45,660 --> 00:16:48,520
+anything out of the box so we're gonna have to install mail server.
+
+242
+00:16:59,020 --> 00:17:00,380
+Let's take a look at the log again.
+
+243
+00:17:05,920 --> 00:17:07,300
+It's still doing things,
+
+244
+00:17:10,920 --> 00:17:12,820
+but it's being filtered.
+
+245
+00:17:17,700 --> 00:17:22,660
+Let's do the manual resolve trick again to force a reset.
+
+246
+00:17:32,400 --> 00:17:34,160
+Here you can see the handler actually did something.
+
+247
+00:17:34,980 --> 00:17:40,240
+sent alert for mycoolhost/memory to root@localhost
+
+248
+00:17:43,940 --> 00:17:44,880
+And it did it again.
+
+249
+00:17:48,360 --> 00:17:52,460
+That first one was for the manual resolve; the second one was for the first alert.
+
+250
+00:17:54,340 --> 00:17:55,440
+Well, let's read it.
+
+251
+00:17:58,600 --> 00:18:00,840
+You get a resolve and alert.
+
+252
+00:18:01,100 --> 00:18:02,580
+Let's take a look at the alert.
+
+253
+00:18:05,480 --> 00:18:06,100
+There it is.
+
+254
+00:18:06,620 --> 00:18:09,400
+Not much to see because "exit 2" doesn't produce any kind of output,
+
+255
+00:18:09,740 --> 00:18:13,180
+but "2" represents critical, it's happened one time.
+
+256
+00:18:13,360 --> 00:18:14,740
+You get an email on the first time.
+
+257
+00:18:15,180 --> 00:18:18,780
+Here's a convenient link to the GUI that we just had opened: Uchiwa.
+
+258
+00:18:22,800 --> 00:18:24,260
+Here's the email with that recovery.
+
+259
+00:18:25,040 --> 00:18:25,860
+Status: OK
+
+260
+00:18:26,720 --> 00:18:29,840
+It happened 12 times by the time it resolved, no big deal.
+
+261
+00:18:32,080 --> 00:18:34,260
+Obviously, we've just scratched the surface here
+
+262
+00:18:34,260 --> 00:18:36,960
+but at least you have a Sensu installation that can email you
+
+263
+00:18:36,960 --> 00:18:37,780
+which is not bad.
+
+264
+00:18:38,400 --> 00:18:39,820
+There are many more things you can
+do.
+
+265
+00:18:39,820 --> 00:18:41,760
+There's tons of community handlers out there,
+
+266
+00:18:44,820 --> 00:18:50,380
+ranging from Slack to IRC to anything you
+can think of.
+
+267
+00:18:50,520 --> 00:18:51,760
+And remember, you can write your own.
+
+268
+00:18:52,100 --> 00:18:55,240
+All they do is take something
+from standard in and act on it.
+
+269
+00:18:56,440 --> 00:18:59,340
+Check out the external links section of this lecture for show notes
+
+270
+00:18:59,440 --> 00:19:02,520
+and links to the documentation on handlers for more reading
+
+271
+00:19:02,800 --> 00:19:05,540
+and also all the commands I used in this lecture.
+
