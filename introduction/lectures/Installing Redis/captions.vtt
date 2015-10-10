@@ -1,0 +1,97 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.000 --> 00:00:04.770
+Hi! Welcome to the screencast on installing Redis. If you remember from our
+
+00:00:04.770 --> 00:00:10.900
+architecture diagram, Redis is where Sensu stores its state. While it may
+
+00:00:10.900 --> 00:00:18.580
+seem like an extra component at first, to
+tack on, it is essential to the ability
+
+00:00:18.580 --> 00:00:23.210
+for Sensu to scale, because with Redis, none of the Sensu
+
+00:00:23.210 --> 00:00:27.060
+servers need to store their state with
+them, and that means that they are stateless
+
+00:00:27.060 --> 00:00:30.050
+and you can have as many as you want.
+We'll talk about that in more advanced courses
+
+00:00:30.050 --> 00:00:35.230
+but for now we're just install a basic
+Redis instance. Again like before we're going to use
+
+00:00:35.230 --> 00:00:38.969
+the official documentation, do it step by
+step, and we're also going to be using
+
+00:00:38.969 --> 00:00:43.929
+our vagrant box, that we used last time...
+
+00:01:01.080 --> 00:01:05.680
+For this we're going to be installing just the stock version of the Redis server that comes with Ubuntu trusty.
+
+00:01:05.680 --> 00:01:09.520
+Most of the time you'll be able to get away with the version of Redis that comes with your distribution.
+
+00:01:13.780 --> 00:01:15.780
+Now we'll start it up...
+
+00:01:22.860 --> 00:01:25.960
+Apparently it was already running.
+
+00:01:25.960 --> 00:01:29.380
+Now that may be, a very simple installation of Redis, and it is,
+
+00:01:29.380 --> 00:01:35.860
+because it's a very easy storage machine to get going, but let's go a little further, to see
+
+00:01:35.860 --> 00:01:36.619
+if it's working.
+
+00:01:36.619 --> 00:01:41.420
+The Sensu docs recommend a "redis-cli ping", so let's check that out...
+
+00:01:44.940 --> 00:01:48.760
+Redis is running. You should get to know at least where the logs are in case you need to
+
+00:01:48.770 --> 00:01:53.530
+troubleshoot, it's in the standard
+location you might expect:"/var/log/redis/"
+
+00:02:01.260 --> 00:02:06.759
+Not much going on. But, if you had
+issues with connecting to it or if it couldn't start,
+
+00:02:06.759 --> 00:02:12.069
+here's where you might go to look to see
+what might be going wrong. Of course it is
+
+00:02:12.069 --> 00:02:18.369
+good to know with every component, what port it listens on and where, and what it binds to.
+
+00:02:19.760 --> 00:02:25.700
+You can see that stock installation, we're
+binding to localhost:6379. So if you're
+
+00:02:25.709 --> 00:02:29.520
+working firewalls or just
+troubleshooting, it's good to know.
+
+00:02:29.520 --> 00:02:35.230
+That's about it for Redis. Again it's a very
+simple storage-machine that we will use,
+
+00:02:35.230 --> 00:02:40.190
+that Sensu-server will use to store its
+state. Now that it's running, our next steps,
+
+00:02:40.190 --> 00:02:43.510
+our next pieces will be able to take advantage of it.
+

@@ -1,0 +1,248 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.800 --> 00:00:06.760
+Let's talk about the differences between the open source version of Sensu and the Enterprise version.
+
+00:00:06.760 --> 00:00:12.040
+First though, full disclosure: I am NOT an employee of Heavy Water Industries.
+
+00:00:12.040 --> 00:00:14.620
+I'm just a normal engineer.
+
+00:00:14.620 --> 00:00:17.040
+I am responsible for the systems that I build.
+
+00:00:17.040 --> 00:00:19.400
+I am on call for them,
+
+00:00:19.400 --> 00:00:24.660
+and I have to make that decision of whether we should build versus buy
+
+00:00:24.660 --> 00:00:28.720
+or whether we should pay someone to help us build something
+
+00:00:28.720 --> 00:00:33.120
+or devote a team of engineers to help us integrate something.
+
+00:00:33.120 --> 00:00:36.940
+To be honest I've never used the Enterprise version of Sensu.
+
+00:00:36.940 --> 00:00:40.220
+I've only used the open-sourced version.
+
+00:00:40.220 --> 00:00:46.560
+But, this is an introductory course, and it's worth talking about, the differences here.
+
+00:00:46.629 --> 00:00:52.559
+Not everyone has a crack team of engineers to take Sensu and integrate it tightly
+
+00:00:52.559 --> 00:00:58.059
+with their existing infrastructure.
+Either way you should make an informed
+
+00:00:58.059 --> 00:01:01.270
+decision about whether you're going to
+use the open source version or the
+
+00:01:01.270 --> 00:01:05.860
+Enterprise version. So let's talk about the
+differences. The main difference between
+
+00:01:05.860 --> 00:01:10.470
+the open source version and the
+Enterprise version, is the support. When
+
+00:01:10.470 --> 00:01:15.979
+you pay for a subscription to the
+Enterprise version of Sensu, you are
+
+00:01:15.979 --> 00:01:20.439
+entitled to get somebody on the phone to
+help you figure out why it may not be
+
+00:01:20.439 --> 00:01:26.049
+working. If you're using the open source version, 
+you only have the type of community
+
+00:01:26.049 --> 00:01:30.439
+support that comes with most open source projects. That's like the mailing list and
+
+00:01:30.439 --> 00:01:36.670
+IRC and that kind of thing. Of course there are other avenues of training,  this one example,
+
+00:01:36.670 --> 00:01:42.220
+but for the most part you're gonna be on
+your own for integrating Sensu at
+
+00:01:42.220 --> 00:01:48.200
+your organization. If you pay for the
+Enterprise version, not only will you get a few
+
+00:01:48.200 --> 00:01:55.170
+niceties, and nice features, you also get
+the ability to depend on a company to be
+
+00:01:55.170 --> 00:01:58.880
+there, when you have questions, and when you need someone to help you
+
+00:01:58.880 --> 00:02:05.770
+troubleshoot and debug why the product is not working. So, keep this in mind when you're making
+
+00:02:05.770 --> 00:02:10.920
+this decision of whether to use the
+open-source, versus the Enterprise version.
+
+00:02:10.920 --> 00:02:15.319
+A lot of the other technical differences
+have to do with how well-tightly-
+
+00:02:15.319 --> 00:02:23.670
+integrated Sensu is with a lot of
+"turn-key" style plugins. Let's talk about
+
+00:02:23.670 --> 00:02:28.550
+more specific technical differences.
+Remember this is not a sales pitch, but any
+
+00:02:28.550 --> 00:02:33.010
+engineer building this type of system
+should at least be informed about the differences
+
+00:02:33.010 --> 00:02:36.580
+you can make the best decision for your
+situation.
+
+00:02:36.580 --> 00:02:42.380
+Let's talk about each piece. This "contact routing" thing: the Enterprise version of Sensu comes with a
+
+00:02:42.380 --> 00:02:46.650
+bunch of configured handlers, that will
+cover ninety percent of what you might
+
+00:02:46.650 --> 00:02:51.470
+want Sensu to do with and alert. So this
+contact routing feature allows you to
+
+00:02:51.470 --> 00:02:57.810
+specify the recipient of an alert, on a per-check basis. It's not that you can't do this
+
+00:02:57.810 --> 00:03:02.319
+with the open source version, it's just a
+little more tricky. This built-in
+
+00:03:02.319 --> 00:03:06.660
+third-party integrations thing means
+that the Enterprise version comes with
+
+00:03:06.660 --> 00:03:12.900
+these handlers I just talked about. They're
+versions of the open-source handlers
+
+00:03:12.900 --> 00:03:16.170
+that are on GitHub, but they're just
+more tightly integrated with the
+
+00:03:16.170 --> 00:03:21.859
+product, so they'll come pre-installed. The
+role-based access control and LDAP,
+
+00:03:21.859 --> 00:03:28.609
+these are things that integrate with the
+Sensu dashboard, the open source
+
+00:03:28.609 --> 00:03:34.200
+version of the Sensu dashboard: Uchiwa, doesn't really have any concept of principle of least
+
+00:03:34.200 --> 00:03:37.850
+privilege, or access controls or anything like that. It's kind of left as
+
+00:03:37.850 --> 00:03:45.549
+an exercise to the reader. Certainly
+your totally free to use an existing web
+
+00:03:45.549 --> 00:03:48.799
+server in front of Uchiwa to handle
+the type of authentication you might
+
+00:03:48.799 --> 00:03:53.840
+need. But if you choose to use the
+Enterprise version of Sensu, you'll get
+
+00:03:53.840 --> 00:03:59.530
+integrated LDAP, and GitHub, and other
+types of access control, built into the
+
+00:03:59.530 --> 00:04:05.440
+dashboard. The support and training is
+probably the biggest feature of the
+
+00:04:05.440 --> 00:04:09.530
+Enterprise version. The training
+is cool of course, but the support is what
+
+00:04:09.530 --> 00:04:15.030
+you're really paying for here. The Sensu model is very similar to many other
+
+00:04:15.030 --> 00:04:21.109
+open source projects, where the
+Enterprise version comes with, you know,
+
+00:04:21.109 --> 00:04:25.789
+a phone number you can call it get someone on the horn when need help. Again, the differences between
+
+00:04:25.789 --> 00:04:29.949
+the open source and the Enterprise
+versions of Sensu, pretty much come
+
+00:04:29.949 --> 00:04:35.900
+down to: how tightly integrated a product
+is with the rest of the ecosystem and
+
+00:04:35.900 --> 00:04:39.780
+support. So if you're in a situation where
+those things are important to you, it may
+
+00:04:39.780 --> 00:04:44.210
+very well be worth the money to pay for
+the Enterprise version. On the other hand
+
+00:04:44.210 --> 00:04:48.770
+if you're used to taking an open source
+product integrating with your infrastructure
+
+00:04:48.770 --> 00:04:50.909
+already, and you don't mind
+
+00:04:50.909 --> 00:04:55.669
+investing the time to integrate
+that product with your stuff, and you're
+
+00:04:55.669 --> 00:05:00.229
+not afraid to be on the hook for a
+system when it doesn't go right,
+
+00:05:00.229 --> 00:05:04.889
+the open source version might be okay
+for you. It just depends on your scale, your
+
+00:05:04.889 --> 00:05:11.370
+particular work environment, and the
+business needs that you have to meet. That's about all I
+
+00:05:11.370 --> 00:05:14.669
+have to say about this. Again, I don't
+wanna make this sound like a sales pitch
+
+00:05:14.669 --> 00:05:21.029
+for one way or the other. But again, as an
+engineer, I think that we all need to be
+
+00:05:21.029 --> 00:05:26.009
+at least aware of these differences, and we need to be making informed decisions about
+
+00:05:26.009 --> 00:05:30.060
+these type of tradeoffs. That's about all I
+have to say about that.
+
