@@ -5,7 +5,7 @@
 You may remember me mentioning before in the introductory course that Sensu is
 distributed as an "omnibus package". That means it comes its own isolated ruby
 interpreter and gems, completely isolated from the system-installed Ruby, if
-any.
+any if the system even has Ruby installed.
 
 This is a good thing for Sensu, it means you have predictable deployments,
 regardless of the distro you are on.
@@ -16,9 +16,6 @@ much that whenever Sensu runs anything Ruby related it will use the embedded
 Ruby.
 
 ### Advantages
-
-The big advantage to this kind of deployment is that you *too* can take
-advantage of this consistently deployed, modern ruby.
 
 ### Method 1: `EMBEDDED_RUBY=true`
 
@@ -93,7 +90,7 @@ that ruby into the she-bang of the script.
 
 And of course you can simply invoke a ruby script with that interpreter directly:
 
-    #!/opt/sensu/embedded/bin/ruby my-script.rb
+    /opt/sensu/embedded/bin/ruby my-script.rb
 
 It may be more verbose, but it is explicit about exactly which ruby to use.
 
