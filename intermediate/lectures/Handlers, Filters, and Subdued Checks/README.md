@@ -7,9 +7,7 @@ out certain alerts.
 
 ## How Filters Work
 
-It should be noted that Sensu filters can only filter things **out**. You
-define the set of rules you want to use, to select which events should be
-ignored:
+A Sensu filter will limit what types of events a handler will see:
 
     https://sensuapp.org/docs/latest/getting-started-with-filters#create-an-event-filter
 
@@ -67,11 +65,11 @@ And now let's restart the sensu-client to pick up that change:
 
 Sensu pretty much will just ignore this extra data, it is not a syntax error.
 
-Now our filter kinda makes more sense. It filters out anything with
-`environment: production` in the client section of the event data.
+Now our filter kinda makes more sense. The filter will make it see only those
+events with `environment: production` in the client section of the event data.
 
-Well we just made our local client have this production attribute, let's apply
-this filter and see if we can filter it out.
+Well we just made our local client have this environment attribute, let's apply
+this filter and see if we can filter it out anything non-production:
 
 ```
 {
@@ -111,6 +109,19 @@ time, and then see if it worekd.
 
     https://sensuapp.org/docs/latest/filters
 
+    sudo restart sensu-server
+    tail -f /var/log/sensu/sensu-server.log
+
+Now if we set our client to have the production environment attribue, the filter
+should start to see it and execute the handler.
+
+    vim /etc/sensu/conf.d/client.json
+    sudo restart sensu-client
+    tail -f /var/log/sensu/sensu-server.log
+
+Now that our client now has the production attribute, the handler sees it and
+sends us email again.
+
 ## Subdue
 
 The "Subdue" mechinism is another tool that you can use, to quiet certain
@@ -118,10 +129,6 @@ checks during specific time period. This is useful for checks during what you
 might call "quiet hours":
 
     https://sensuapp.org/docs/latest/checks#subdue-attributes
-
-The subdue mechansim works really well when used at the publisher level. This
-means that the checks are never even initiated by clients in the first place,
-you are not just silencing alerts.
 
 All of the subdue attributes are time-centric, they don't have anything to do
 with client attributes. Also you should note that this kind of filtering is on
@@ -134,3 +141,8 @@ relevant to check during say, non business hours. Other times you want to
 filter our checks that operate on custom client or check attributes, like
 things that are in the production environment.
 
+## Conclusion
+
+As always, be sure to check out the external resources section of this lecture
+for exact links to the Sensu documentation on these features for filtering
+out Sensu alerts.
