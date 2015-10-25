@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Iterates through each client and will alert or resolve based on
+# whether action is required.
+#
+
+function check_customer {
+  customer=$1
+  standing=$2
+  # If a customer is in bad standing, send an alert so someone
+  # can look at it and try to fix it
+  if [[ $standing == "good" ]]; then
+    sensu-cli socket create --name "$customer" --output "Ok: Customer $customer is fine and is in in $standing standing" --status 0
+  else
+    sensu-cli socket create --name "$customer" --output "Critical: Customer $customer is in $standing standing. Take action!" --status 2
+  fi
+}
+
+# Iterate over all the customers
+check_customer "customerA" "good"
+check_customer "customerB" "good"
+check_customer "customerC" "good"

@@ -67,7 +67,7 @@ events to the local socket. All you have to do is prepend your command with
 
 Let's try it out and see how it works behind the scense. First I'll download it:
 
-    wget -O /usr/local/bin/sensu-shell-helper https://github.com/solarkennedy/sensu-shell-helper/blob/master/sensu-shell-helper
+    wget -O /usr/local/bin/sensu-shell-helper https://github.com/solarkennedy/sensu-shell-helper/raw/master/sensu-shell-helper
     chmod +x /usr/local/bin/sensu-shell-helper
 
 And now let's make up our fake report
