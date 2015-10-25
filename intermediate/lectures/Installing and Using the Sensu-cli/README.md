@@ -26,6 +26,16 @@ in my path by adding a symlink
     ln -s /opt/sensu/embedded/bin/sensu-cli /usr/local/bin/
     which sensu-cli
 
+## Background Prep
+
+    sed -i "s/localhost/`hostname -f`/" /etc/sensu/conf.d/client.json
+    /etc/init.d/sensu-client restart
+    sensu-cli client delete localhost
+    sensu-cli socket create -n check_http -o "CRITICAL: 400 bad" -s 2
+    sensu-cli socket create -n check_mem -o "WARNING: Out of memory" -s 1
+    sensu-cli socket raw '{"name": "check_ssh", "output": "CRIT: ssh is down", "status": 2, "source": "web02"}'
+    sensu-cli socket raw '{"name": "check_disk", "output": "CRIT: Disk is full", "status": 2, "source": "sadserver"}'
+
 ## Usage
 
 Now let's see what it can do. Out of the box the tool is very human-friendly,
@@ -108,6 +118,7 @@ certainly write a program to do it, but I'm going to use one of my favorite
 unixy tools: `jq`. You have seen me use `jq` a few times before in previous
 lectures. Here I'm going to use it to print out just the check name and output:
 
+    apt-get -y install jq
     sensu-cli event list --filter name,`hostname -f `  --format=json | jq -r '.[].check | .name + ":|" + .output'
 
 And then one more filter I'll apply is to pipe it through the column tool to align it:
@@ -137,6 +148,7 @@ tool to do this? Well, it it can be as simple as a single command:
 The first argument is the hostname itself
 
     sensu-cli silence `hostname -f`
+    sensu-cli stash list
 
 If you are going to silence the whole machine, then we won't provide a check
 name. 
@@ -148,6 +160,7 @@ that if something goes wrong, it will automatically be un-silenced eventually.
 I don't think anything should be silenced indefinitely.
 
     sensu-cli silence `hostname -f` --owner root --reason "This server was just created" --expire 3600
+    sensu-cli stash list
 
 Likewise the server could "un-silence" itself, maybe after a chef run or
 something like that.
@@ -168,11 +181,11 @@ Now that we have the raw names, we can pass them onto another tool. Let's say
 it was an emergency and you needed to silence them all. You could use on of my
 other favorite tools, `xargs`:
 
-    sensu-cli client list -f json | jq -r .[].name | xargs -v -n1 --no-run-if-empty sensu-cli slience
+    sensu-cli client list -f json | jq -r .[].name | xargs --verbose -n1 --no-run-if-empty sensu-cli silence
 
 So here we are taking every sensu client, and xargs will turn that and execute
 the sensu-cli silence command. The n1 indicates that we want xargs to execute
-one sensu-cli command per argument. I like the -v verbose flag so it will print
+one sensu-cli command per argument. I like the --verbose flag so it will print
 out exactly what xargs is running. Let's see what happens...
 
 Of course with this you could easily just use `grep` and filter only the clients
@@ -200,13 +213,14 @@ help "clean up" any residual checks. For example, let's say you were running a h
 company and had a check for every customer that you had, and when a customer leaves,
 you would want to resolve any lingering events that might have been open, so they don't clutter up the dashboard.
 
-    sensu-cli socket create -n customer1
-    sensu-cli event list
+    sensu-cli socket create -n customer1 --output "Customer1 is DOWN" -s 2
+    sensu-cli event list -f table
 
 And then lets say customer1 left or was terminated, you could use the sensu-cli tool to resolve
 that check manually:
 
-    sensu-cli resolve customer1
+    sensu-cli resolve `hostname -f` customer1
+    sensu-cli event list -f table
 
 Certainly your customer provisioning tool could interact with the Sensu api
 directly, but not everything has to be that fancy, if you just have some script
@@ -236,23 +250,23 @@ sensu-cli silence `hostname -f` --owner root --reason "This server was just crea
 sensu-cli client list -f json |
   jq -r .[].name |
   grep "test" |
-  xargs -v -n1 --no-run-if-empty sensu-cli slience
+  xargs --verbose --no-run-if-empty -n1 sensu-cli silence
 ```
 
 ### Delete sliences older than 3 days
 
 ```bash
 THRESHOLD=$(date +%s --date="3 days ago")
-sensu-cli stash list -f json |
+sensu-cli stash list --format json |
   jq -r "map(select( .[\"content\"][\"timestamp\"] < $THRESHOLD )) | .[].path " |
-  xargs -r -n 1 sensu-cli stash delete
+  xargs --verbose --no-run-if-empty -n1 sensu-cli stash delete
 ```
 
 ### Purge any checks that haven't checked in in a month
 
 ```bash
 THRESHOLD=$(date +%s --date="1 month ago")
-sensu-cli event list -f json |
-  jq -r "map(select( .[\"check\"][\"issued\"] < $THRESHOLD )) | .[].client.name + \" \" +  .[].check.name " |
-  xargs -r -n 2 sensu-cli resolve
+sensu-cli event list --format json |
+  jq --raw-output "map(select( .[\"check\"][\"issued\"] < $THRESHOLD )) | .[] | .client.name + \" \" +  .check.name " |
+  xargs --verbose --no-run-if-empty -n2 sensu-cli resolve
 ```
