@@ -221,3 +221,38 @@ get really fancy, you can combine it with things like `jq` and do some pretty
 crazy things. Check out the show notes for some even more complicated examples
 of using this cli tool that I'm too embarrassed to admit that I've used them in
 production.
+
+## All Examples
+
+### Have a host silence itself
+
+```bash
+sensu-cli silence `hostname -f` --owner root --reason "This server was just created" --expire 3600
+```
+
+### Silence any client that has the word "test" in the name
+
+```
+sensu-cli client list -f json |
+  jq -r .[].name |
+  grep "test" |
+  xargs -v -n1 --no-run-if-empty sensu-cli slience
+```
+
+### Delete sliences older than 3 days
+
+```bash
+THRESHOLD=$(date +%s --date="3 days ago")
+sensu-cli stash list -f json |
+  jq -r "map(select( .[\"content\"][\"timestamp\"] < $THRESHOLD )) | .[].path " |
+  xargs -r -n 1 sensu-cli stash delete
+```
+
+### Purge any checks that haven't checked in in a month
+
+```bash
+THRESHOLD=$(date +%s --date="1 month ago")
+sensu-cli event list -f json |
+  jq -r "map(select( .[\"check\"][\"issued\"] < $THRESHOLD )) | .[].client.name + \" \" +  .[].check.name " |
+  xargs -r -n 2 sensu-cli resolve
+```
