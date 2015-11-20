@@ -39,7 +39,7 @@ to be aware of it. Let's look at one of my favorite use cases for this: Cron job
 Let's say we have a cron job in place that we want to monitor, like this
 
     crontab -l
-    * * * 0 0 send-nightly-customer-report
+    0 0 * * * send-nightly-customer-report
 
 So we have this nightly customer report, and I would like to know if it doesn't work.
 Sure, you could check your inbox for cron emails. Or maybe you could edit your
