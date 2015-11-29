@@ -19,8 +19,8 @@ Remember the client puts things onto rabbitmq. The Sensu server doesn't actually
 
 Remember when we configured the Sensu Server to run that check-mem script in the previous lecture? We didn't even bother to install the actual check script. Why? Remember that checks are always executed by the Sensu-client. This Sensu client we are configuring is going to need this check, so lets get it:
 
-    sudo wget -O /etc/sensu/plugins/check-mem.sh http://sensuapp.org/docs/0.20/files/check-mem.sh
-    sudo chmod +x /etc/sensu/plugins/check-mem.sh
+    sudo wget -O /etc/sensu/plugins/check-memory.sh http://sensuapp.org/docs/0.20/files/check-memory.sh
+    sudo chmod +x /etc/sensu/plugins/check-memory.sh
 
 ### Client startup
 
